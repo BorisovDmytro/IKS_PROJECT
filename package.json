@@ -1,0 +1,24 @@
+{
+  "author": "IHKS",
+  "name": "messanger",
+  "version": "0.0.1",
+  "dependencies": {
+    "async": "1.5.0",
+    "ws" : "latest",
+    "url" :  "latest",
+    "argparse": "latest",
+    "body-parser": "latest",
+    "connect-mongo": "latest",
+    "cookie-parser": "latest",
+    "express": "latest",
+    "express-session": "latest",
+    "fs-extra": "latest",
+    "moment": "latest",
+    "mongodb": "latest",
+    "morgan": "latest",
+    "multer": "latest",
+    "session-file-store": "latest",
+    "socketcluster-server" : "latest",
+    "cluster": "latest"
+  }
+}
