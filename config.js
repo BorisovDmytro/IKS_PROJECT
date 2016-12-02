@@ -5,5 +5,5 @@ var config = {
 }
 
 module.exports = (key, def) => {
-  return config(key) || def;
+  return config[key] || def;
 }

@@ -18,4 +18,6 @@ app.get("/", function(req, res) {
   res.sendFile(__dirname + "/public/html/index.html");
 });
 
-httpServer.listen(config('port', 8080), config('ip', '127.0.0.1'));
+httpServer.listen(config('port', 8080), config('ip', '127.0.0.1'), ()=> {
+  console.log("Server start ... done");
+});
