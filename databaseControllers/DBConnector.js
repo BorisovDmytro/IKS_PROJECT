@@ -14,7 +14,7 @@ class DBConnector {
       else {
         this.client = db;
         console.log('connected to database ::', db.databaseName);
-        cb(db);
+        cb(this.client);
       }
     });
   }
