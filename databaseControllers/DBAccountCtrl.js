@@ -2,7 +2,7 @@
 
 const moment     = require('moment');
 const ObjectID   = require('mongodb').ObjectID;
-const Encryption = require('./Encryption.js')
+const Encryption = require('./../utils/Encryption.js')
 
 class DBAccountCtrl {
   constructor(db) {
@@ -57,7 +57,7 @@ class DBAccountCtrl {
   }
 
   getById(id, cb) {
-    this.collection.findOne({_id: ObjectID(id)}, cb);
+    this.collection.findOne({_id: new ObjectID(id)}, cb);
   }
 
   getByEmail(email, cb) {

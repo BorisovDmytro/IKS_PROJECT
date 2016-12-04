@@ -18,10 +18,11 @@ class DBConnector {
       }
     });
   }
-
+  
   close() {
     this.client.close();
   }
 }
 
 module.exports = DBConnector;
+

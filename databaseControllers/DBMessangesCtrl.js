@@ -2,7 +2,7 @@
 
 class DBMessangesCtrl {
   constructor(db) {
-    
+    this.collection = db.collection('messanges');  
   }
 }
 
