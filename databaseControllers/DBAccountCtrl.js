@@ -63,6 +63,10 @@ class DBAccountCtrl {
   getByEmail(email, cb) {
     this.collection.findOne({email: email}, cb);
   }
+
+  getByEmailOrName(email, name, cb) {
+    this.collection.findOne({ $or: [{email: email}, {name: name}] }, cb);
+  }
 }
 
 module.exports = DBAccountCtrl;

@@ -4,7 +4,7 @@
  *  _id
  *  name
  *  owner
- *  users
+ *  users = []
  */
 
 class DBGroupCtrl {
