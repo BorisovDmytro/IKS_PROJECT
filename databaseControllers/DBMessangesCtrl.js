@@ -31,7 +31,7 @@ class DBMessangesCtrl {
     next = next < 0 ? 0 : next;
 
     this.collection.find({group: groupName})
-                   .skipp(next)
+                   .skip(next)
                    .limit(this.limit)
                    .toArray(cb);   
   }

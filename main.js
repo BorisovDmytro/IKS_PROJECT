@@ -26,9 +26,10 @@ app.get("/", function(req, res) {
 
 connector.connect(config("dbUrl"), (db) => {
   const dbAccountCtrl = DbFactory.createAccountCtrl(db);
+  const dbMgsCtrl     = DbFactory.createMessangesCtrl(db);
 
   const authCtrl = ControllerFactory.createAuthCtrl(dbAccountCtrl);
-  const messenger = ControllerFactory.createMessengerController(httpServer); 
+  const messenger = ControllerFactory.createMessengerController(httpServer, dbMgsCtrl); 
 
   app.post("/auth", authCtrl.login.bind(authCtrl));
   app.put("/auth",  authCtrl.signUp.bind(authCtrl));

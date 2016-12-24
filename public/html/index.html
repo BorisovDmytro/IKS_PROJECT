@@ -12,6 +12,7 @@
   <script src="js/services/messengerService.js"></script>
 
   <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all">
+  <link href="css/style.css"         rel="stylesheet" type="text/css" media="all">
 </head>
 
 <body ng-app="App">
@@ -80,59 +81,11 @@
 
     <div class="panel-body" style="overflow-y: auto; height: calc(100% - 120px);">
 
-      <div class="media alert alert-success" style="width: 90%; float:left;">
+      <div ng-repeat="msg in messages"
+           ng-class="msg.owner == account.name ? 'media alert alert-info myMsg' : 'media alert alert-success userMsg'">
         <div class="media-body">
-          <h4 class="media-heading">John Doe</h4>
-          <p>Lorem ipsum...</p>
-        </div>
-      </div>
-
-      <div class="media alert alert-info" style="width: 90%; float:right;">
-        <div class="media-body">
-          <h4 class="media-heading">John Doe</h4>
-          <p>Lorem ipsum...</p>
-        </div>
-      </div>  
-
-        <div class="media alert alert-success" style="width: 90%; float:left;">
-        <div class="media-body">
-          <h4 class="media-heading">John Doe</h4>
-          <p>Lorem ipsum...</p>
-        </div>
-      </div>
-
-        <div class="media alert alert-success" style="width: 90%; float:left;">
-        <div class="media-body">
-          <h4 class="media-heading">John Doe</h4>
-          <p>Lorem ipsum...</p>
-        </div>
-      </div>
-
-        <div class="media alert alert-success" style="width: 90%; float:left;">
-        <div class="media-body">
-          <h4 class="media-heading">John Doe</h4>
-          <p>Lorem ipsum...</p>
-        </div>
-      </div>
-
-        <div class="media alert alert-success" style="width: 90%; float:left;">
-        <div class="media-body">
-          <h4 class="media-heading">John Doe</h4>
-          <p>Lorem ipsum...</p>
-        </div>
-      </div>
-
-        <div class="media alert alert-success" style="width: 90%; float:left;">
-        <div class="media-body">
-          <h4 class="media-heading">John Doe</h4>
-          <p>Lorem ipsum...</p>
-        </div>
-      </div>
-
-        <div class="media alert alert-success" style="width: 90%; float:left;">
-        <div class="media-body">
-          <h4 class="media-heading">John Doe</h4>
-          <p>Lorem ipsum...</p>
+          <h4 class="media-heading">{{msg.owner}}</h4>
+          <p>{{msg.messages}}</p>
         </div>
       </div>
 
@@ -147,11 +100,13 @@
 
         <input type="text" class="form-control" id="messagetext" 
                   placeholder="Enter message" 
+                  ng-model="sendMessage"
                   style="margin-left: 5px; margin-right: 5px; height: 60px; width: calc(100% - 120px); float: left; resize: none;"> 
         </input>
 
         <button type="button" class="btn btn-default btn-lg"
-                style="float:right; padding: 5px; width: 55px;">
+                style="float:right; padding: 5px; width: 55px;"
+                ng-click="send()">
            <img src="/images/send.png" width="50" height="50" />
         </button>      
     </div>

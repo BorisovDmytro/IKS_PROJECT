@@ -37,8 +37,6 @@ class AuthCtrl {
     const pass  = req.body.pass;
     const name  = req.body.name;
 
-    console.log("Body:", req.body);
-
     if (!email || !pass || !name)
       res.status(400).send("not valid data");
     else {
@@ -49,7 +47,6 @@ class AuthCtrl {
         } else {
           this.accountCtrl.insert(email, name, pass, (err, doc) => {
             if (!err) {
-              console.log("Res:", doc);
               res.status(200).send("success");
             } else {
               res.status(400).send("not valid data");

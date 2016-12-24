@@ -8,8 +8,8 @@ class ControllerFactory {
     return new AuthCtrl(accountCtrl);
   }
 
-  static createMessengerController(httpServer) {
-    return new MessengerController(httpServer);
+  static createMessengerController(httpServer, dbMsgCtrl) {
+    return new MessengerController(httpServer, dbMsgCtrl);
   }
 
 }
