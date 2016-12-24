@@ -1,6 +1,10 @@
 angular.module("App").factory('authService', 
 ['$http', 
 function(http) {
+
+  var account = null;
+  var loginCb = function() {};
+
   return {
     login: function(email, pass, cb) {
       http({
@@ -8,7 +12,9 @@ function(http) {
          url: '/auth',
          data: {email: email, pass: pass}
       }).then(function(answ) {
-        cb(null, answ.data); // {id: dadsda, name: "name"}
+        account = answ.data;
+        loginCb();
+        cb(null);
         // ok
       }, function(err) {
         // err
@@ -28,6 +34,14 @@ function(http) {
         // err
         cb(err);
       });
+    },
+
+    getAccount: function() {
+      return account;
+    },
+
+    setLoginCb: function(cb) {
+      loginCb = cb;
     }
   };
 }]);

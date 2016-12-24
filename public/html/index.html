@@ -15,54 +15,149 @@
 </head>
 
 <body ng-app="App">
-  <!--div ng-controller="authCtrl">
+  <div ng-controller="authCtrl" ng-show="visible"
+       class="container" style="background-color: #eaeaea; width: 100%; height: 100%;">
 
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width: 450px;">
       <div class="modal-content">
-        <div class="modal-header">
-          <ul class="nav nav-tabs">
-            <li ng-class="isLogin ? 'active' : ''">
-              <a ng-click="isLogin = true">Login</a>
+      
+        <div class="modal-body form-horizontal">
+
+           <ul class="nav nav-tabs">
+            <li ng-class="isLogin ? 'active' : ''" style="width: 50%;">
+              <a ng-click="isLogin = true" style="cursor: default;">Вход</a>
             </li>
-            <li ng-class="isLogin ? '' : 'active'">
-              <a ng-click="isLogin = false">Sign up</a>
+            <li ng-class="isLogin ? '' : 'active'" style="width: 50%;">
+              <a ng-click="isLogin = false" style="cursor: default;">Регестрация</a>
             </li>
           </ul>
-        </div>
-        <div class="modal-body form-horizontal" ng-show="isLogin">
-          <div class="form-group">
-            <label class="control-label col-sm-2" for="email">Email:</label>
-            <div class="col-sm-10">
-              <input type="email" class="form-control" id="email" placeholder="Enter email" ng-model="loginEmail">
+          <br>
+          <div ng-show="isLogin">
+            <div class="input-group" >
+              <span class="input-group-addon"><img src="images/email.png" width="20" height="20"/></span>
+              <input type="email" class="form-control" id="email" placeholder="почта" ng-model="loginEmail">
+            </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon"><img src="images/pass.png" width="20" height="20"/></span>
+              <input type="password" class="form-control" id="pass" placeholder="пароль" ng-model="loginPassword">
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="control-label col-sm-2" for="email">Password:</label>
-            <div class="col-sm-10">
-              <input type="password" class="form-control" id="pass" placeholder="Enter password" ng-model="loginPassword">
-            </div>
+          
+         <div ng-show="!isLogin">
+          <div class="input-group">
+            <span class="input-group-addon"><img src="images/email.png" width="20" height="20"/></span>
+            <input type="email" class="form-control" placeholder="почта" ng-model="signupLogin">
           </div>
-
+          <br>
+          <div class="input-group">
+            <span class="input-group-addon"><img src="images/user.png" width="20" height="20"/></span>
+            <input type="text" class="form-control" placeholder="имя в сети"  ng-model="signupUserName">
+          </div>
+          <br>
+          <div class="input-group">
+            <span class="input-group-addon"><img src="images/pass.png" width="20" height="20"/></span>
+            <input type="password" class="form-control" placeholder="пароль"  ng-model="signupPassword">
+          </div>
         </div>
-
-        <div class="modal-body form-horizontal" ng-show="!isLogin">
-          SIGN UP
+        
         </div>
-
         <div class="modal-footer">
-          <button type="button" class="btn btn-success btn-block" ng-click="onSubmite()">
-                    Submite
+          <button type="button" class="btn btn-success btn-block btn-lg" ng-click="onSubmite()">
+                    Применить
             </button>
         </div>
       </div>
 
     </div>
 
-    <div-->
+  </div>
 
-    <div ng-controller="messengerCtrl" ng-init="init()">
-    </div>    
+<div ng-controller="messengerCtrl" ng-show="isVisible" ng-init="init()" class="panel panel-default" 
+     style="margin: auto; width: 60%; height: 98%;">
+
+    <div class="panel-heading">Public group</div>
+
+    <div class="panel-body" style="overflow-y: auto; height: calc(100% - 120px);">
+
+      <div class="media alert alert-success" style="width: 90%; float:left;">
+        <div class="media-body">
+          <h4 class="media-heading">John Doe</h4>
+          <p>Lorem ipsum...</p>
+        </div>
+      </div>
+
+      <div class="media alert alert-info" style="width: 90%; float:right;">
+        <div class="media-body">
+          <h4 class="media-heading">John Doe</h4>
+          <p>Lorem ipsum...</p>
+        </div>
+      </div>  
+
+        <div class="media alert alert-success" style="width: 90%; float:left;">
+        <div class="media-body">
+          <h4 class="media-heading">John Doe</h4>
+          <p>Lorem ipsum...</p>
+        </div>
+      </div>
+
+        <div class="media alert alert-success" style="width: 90%; float:left;">
+        <div class="media-body">
+          <h4 class="media-heading">John Doe</h4>
+          <p>Lorem ipsum...</p>
+        </div>
+      </div>
+
+        <div class="media alert alert-success" style="width: 90%; float:left;">
+        <div class="media-body">
+          <h4 class="media-heading">John Doe</h4>
+          <p>Lorem ipsum...</p>
+        </div>
+      </div>
+
+        <div class="media alert alert-success" style="width: 90%; float:left;">
+        <div class="media-body">
+          <h4 class="media-heading">John Doe</h4>
+          <p>Lorem ipsum...</p>
+        </div>
+      </div>
+
+        <div class="media alert alert-success" style="width: 90%; float:left;">
+        <div class="media-body">
+          <h4 class="media-heading">John Doe</h4>
+          <p>Lorem ipsum...</p>
+        </div>
+      </div>
+
+        <div class="media alert alert-success" style="width: 90%; float:left;">
+        <div class="media-body">
+          <h4 class="media-heading">John Doe</h4>
+          <p>Lorem ipsum...</p>
+        </div>
+      </div>
+
+    </div>
+      <div class="panel-footer form-horizontal" style="height: 80px;">
+      <div class="form-group" style="height: 80%;" >
+
+        <button type="button" class="btn btn-default btn-lg" 
+                style="float:left; padding: 5px;  width: 55px;">
+          <img src="/images/papeclip.png" width="50" height="50" />
+        </button>
+
+        <input type="text" class="form-control" id="messagetext" 
+                  placeholder="Enter message" 
+                  style="margin-left: 5px; margin-right: 5px; height: 60px; width: calc(100% - 120px); float: left; resize: none;"> 
+        </input>
+
+        <button type="button" class="btn btn-default btn-lg"
+                style="float:right; padding: 5px; width: 55px;">
+           <img src="/images/send.png" width="50" height="50" />
+        </button>      
+    </div>
+  </div>
+</div>
+
 </body>
 
 </html>

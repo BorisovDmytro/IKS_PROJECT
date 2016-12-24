@@ -34,22 +34,25 @@ class AuthCtrl {
 
   signUp(req, res) {
     const email = req.body.email;
-    const pass = req.body.pass;
-    const name = req.body.name;
+    const pass  = req.body.pass;
+    const name  = req.body.name;
 
-    if (!email || !pass)
-      res.status(404).send("not valid data");
+    console.log("Body:", req.body);
+
+    if (!email || !pass || !name)
+      res.status(400).send("not valid data");
     else {
-      dbAccountCtrl.getByEmailOrName(email, name, (err, doc) => {
-        if (!err || doc) {
-          res.status(404).send("not valid data");
+      this.accountCtrl.getByEmailOrName(email, name, (err, doc) => {
+        console.log("get account", err, doc)
+        if (!err && doc) {
+          res.status(400).send("not valid data");
         } else {
-          dbAccountCtrl.insert(email, name, pass, (err, doc) => {
+          this.accountCtrl.insert(email, name, pass, (err, doc) => {
             if (!err) {
               console.log("Res:", doc);
               res.status(200).send("success");
             } else {
-              res.status(404).send("not valid data");
+              res.status(400).send("not valid data");
             }
           });
         }
