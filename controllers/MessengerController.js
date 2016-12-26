@@ -32,13 +32,15 @@ class MessengerController {
            this.clients(index, 1);
        });
 
-        webSocket.on("loadMsg", (data) => {
+        webSocket.on("getHistory", (data, res) => {
          console.log("loadMsg", data);
          this.dbMessangesCtrl.getGroupMessages(data.groupName, data.cursore, (err, data) => {
-           if(err)
-            console.log("err laod data messages");
-           else 
-            webSocket.emit("dataMsg", data); 
+           if(err) {
+             console.log("err laod data messages");
+             res("err laod data messages", null);
+           } else {
+             res(null, data);               
+           } 
          });
        });
     });

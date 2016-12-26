@@ -1,6 +1,7 @@
 <html>
 
 <head>
+  <script src="js/common/jquery.min.js"></script>
   <script src="js/common/angular.min.js"></script>
   <script src="js/common/socketcluster.js"></script>
   <script src="js/app.js"></script>
@@ -75,11 +76,11 @@
   </div>
 
 <div ng-controller="messengerCtrl" ng-show="isVisible" ng-init="init()" class="panel panel-default" 
-     style="margin: auto; width: 60%; height: 98%;">
+     style="margin: auto; width: 100%; height: 98%;">
 
     <div class="panel-heading">Public group</div>
 
-    <div class="panel-body" style="overflow-y: auto; height: calc(100% - 120px);">
+    <div id="msgBody" class="panel-body" style="overflow-y: auto; height: calc(100% - 120px);">
 
       <div ng-repeat="msg in messages"
            ng-class="msg.owner == account.name ? 'media alert alert-info myMsg' : 'media alert alert-success userMsg'">

@@ -37,7 +37,14 @@ function messengerService() {
           msgUpdateCb(data); 
         });
 
-        webSocket.emit("loadMsg", {groupName: "Public", cursore: 0});
+        //webSocket.emit("loadMsg", {groupName: "Public", cursore: 0});
+      webSocket.emit("getHistory", {groupName: "Public", cursore: 0},
+       function(err, data) {
+         if(!err) {
+           console.log("getHistory", data);
+           msgLoadingCb(data);
+         }
+        });
       });
     }
   };
