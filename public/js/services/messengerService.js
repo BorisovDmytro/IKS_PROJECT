@@ -32,7 +32,7 @@ function messengerService() {
         });
     },
 
-    initialize(account) {
+    initialize(account, cb) {
       var self = this;
 
       webSocket = new socketCluster.connect({id: account.id});
@@ -55,6 +55,7 @@ function messengerService() {
               self.getHistory("Public", 0);
             else 
               alert("Error auth");  
+            cb(err);  
           });
       });
     }

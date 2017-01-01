@@ -41,7 +41,8 @@ class MessengerController {
         });
        });
 
-       webSocket.on("close", () => {
+       webSocket.on("disconnect", () => {
+         console.log("On close ");
          const id = webSocket.id;
          this.clients.delete(id);
       });

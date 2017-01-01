@@ -11,10 +11,11 @@ function($scope, authService, messengerService, $timeout) {
 
         var doc = document.getElementById("msgBody");
         doc.scrollTop = doc.scrollHeight;
-
-        $('#msgBody').stop().animate({
-          scrollTop: $("#msgBody")[0].scrollHeight
-        }, 600);  
+        $timeout(function () {
+          $('#msgBody').stop().animate({
+            scrollTop: $("#msgBody")[0].scrollHeight
+          }, 200);  
+        }, 100);
       }, 10);
     });
 
@@ -31,9 +32,14 @@ function($scope, authService, messengerService, $timeout) {
 
     
     authService.setLoginCb(function() {
-      $scope.isVisible = true;
       $scope.account = authService.getAccount();
-      messengerService.initialize($scope.account);
+      messengerService.initialize($scope.account, function(err) {
+        if(!err) {
+          $scope.isVisible = true;
+        } else {
+          $scope.isVisible = false;
+        }
+      });
     });
   }
 
