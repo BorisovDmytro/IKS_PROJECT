@@ -34,7 +34,7 @@ function messengerService() {
 
     initialize(account, cb) {
       var self = this;
-
+      console.log("Inizialise", account);
       webSocket = new socketCluster.connect({id: account.id});
       webSocket.on('connect', function () {
         console.log('CONNECTED');

@@ -30,16 +30,19 @@ function($scope, authService, messengerService, $timeout) {
       }, 10);
     });
 
-    
-    authService.setLoginCb(function() {
-      $scope.account = authService.getAccount();
-      messengerService.initialize($scope.account, function(err) {
-        if(!err) {
-          $scope.isVisible = true;
-        } else {
-          $scope.isVisible = false;
-        }
-      });
+    $scope.account = authService.getAccount();
+    if(!$scope.account)
+      window.location = "/";
+
+    $scope.nikname = $scope.account.name;
+
+    messengerService.initialize($scope.account, function(err) {
+      if(!err) {
+        $scope.isVisible = true;
+      } else {
+        window.location = "/";
+        $scope.isVisible = false;
+      }
     });
   }
 
