@@ -14,7 +14,7 @@ function($scope, authService, messengerService, $timeout) {
 
         $('#msgBody').stop().animate({
           scrollTop: $("#msgBody")[0].scrollHeight
-        }, 200);  
+        }, 600);  
       }, 10);
     });
 
@@ -33,7 +33,7 @@ function($scope, authService, messengerService, $timeout) {
     authService.setLoginCb(function() {
       $scope.isVisible = true;
       $scope.account = authService.getAccount();
-      messengerService.initialize();
+      messengerService.initialize($scope.account);
     });
   }
 

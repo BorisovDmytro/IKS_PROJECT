@@ -37,8 +37,6 @@ connector.connect(config("dbUrl"), (db) => {
   httpServer.listen(config('port', 8080), config('ip', '127.0.0.1'), () => {});
 });
 
-
-
 /*
    // TODO REMOVE AFTER RELISE 
     console.log("Run test");

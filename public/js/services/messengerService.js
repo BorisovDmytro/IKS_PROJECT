@@ -10,20 +10,32 @@ function messengerService() {
       msgLoadingCb = cb;
     },
 
-   subscribeMessageUpdate(cb) {
+    subscribeMessageUpdate(cb) {
       msgUpdateCb = cb;
     },
 
-    load: function (groupName, idAccount) {
+    load(groupName, idAccount) {
 
     },
 
-    send: function (userName, groupName, message) {
+    send(userName, groupName, message) {
       webSocket.emit("msg", {userName: userName, groupName: groupName, message: message});
     },
 
-    initialize: function () {
-      webSocket = new socketCluster.connect();
+    getHistory(groupName, cursore) {
+      webSocket.emit("getHistory", {groupName: groupName, cursore: cursore},
+       function(err, data) {
+         if(!err) {
+           console.log("getHistory", data);
+           msgLoadingCb(data);
+         }
+        });
+    },
+
+    initialize(account) {
+      var self = this;
+
+      webSocket = new socketCluster.connect({id: account.id});
       webSocket.on('connect', function () {
         console.log('CONNECTED');
 
@@ -37,14 +49,13 @@ function messengerService() {
           msgUpdateCb(data); 
         });
 
-        //webSocket.emit("loadMsg", {groupName: "Public", cursore: 0});
-      webSocket.emit("getHistory", {groupName: "Public", cursore: 0},
-       function(err, data) {
-         if(!err) {
-           console.log("getHistory", data);
-           msgLoadingCb(data);
-         }
-        });
+        webSocket.emit("auth", {id: account.id}, 
+          function(err, answ) {
+            if(!err)
+              self.getHistory("Public", 0);
+            else 
+              alert("Error auth");  
+          });
       });
     }
   };
