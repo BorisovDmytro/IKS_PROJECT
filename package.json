@@ -1,0 +1,38 @@
+{
+  "name": "IKS_Project_es6",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "run": "babel-node app.js",
+    "build": "babel . -d .dist --ignore=\"node_modules\""
+  },
+  "keywords": [],
+  "author": "Borysov Dmytro",
+  "license": "ISC",
+  "devDependencies": {
+    "argparse": "latest",
+    "async": "1.5.0",
+    "babel": "^6.5.2",
+    "babel-cli": "*",
+    "babel-core": "*",
+    "babel-preset-es2015-node5": "*",
+    "babel-preset-stage-3": "*",
+    "babel-register": "*",
+    "body-parser": "latest",
+    "cluster": "latest",
+    "connect-mongo": "latest",
+    "cookie-parser": "latest",
+    "express": "^4.14.0",
+    "express-session": "latest",
+    "fs-extra": "latest",
+    "moment": "latest",
+    "mongodb": "latest",
+    "morgan": "latest",
+    "multer": "latest",
+    "session-file-store": "latest",
+    "socketcluster-server": "latest",
+    "url": "latest",
+    "ws": "latest"
+  }
+}
