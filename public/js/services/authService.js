@@ -1,47 +1,45 @@
-angular.module("App").factory('authService', 
-['$http', 
-function(http) {
+'use strict'
 
-  var account = null;
-  var loginCb = function() {};
+class AuthService extends IController{
+  constructor($http) {
+    super();
+    this.account = null;
+    this.http = $http;
+  }
 
-  return {
-    login: function(email, pass, cb) {
-      http({
-         method: 'POST',
-         url: '/auth',
-         data: {email: email, pass: pass}
-      }).then(function(answ) {
-        account = answ.data;
-        loginCb();
-        cb(null);
-        // ok
-      }, function(err) {
-        // err
-        cb(err);
-      });
-    },
+  login(model, cb) {
+    let self = this;
 
-    signUp: function(email, name, pass, cb) {
-        http({
-         method: 'PUT',
-         url: '/auth',
-         data: {email: email, pass: pass, name: name}
-      }).then(function(answ) {
-        // ok
-         cb(null, answ.data); // success
-      }, function(err) {
-        // err
-        cb(err);
-      });
-    },
+    this.http({
+      method: 'POST',
+      url: '/auth',
+      data: model
+    }).then(function (answ) {
+      self.account = answ.data;
+      cb(null);
+    }, function (err) {
+      self.account = null;
+      cb(err);
+    });
+  }
 
-    getAccount: function() {
-      return account;
-    },
+  signUp(model, cb) {
+    this.http({
+      method: 'PUT',
+      url: '/auth',
+      data: model 
+    }).then(function (answ) {
+      // ok
+      cb(null, answ.data); // success
+    }, function (err) {
+      // err
+      cb(err);
+    });
+  }
 
-    setLoginCb: function(cb) {
-      loginCb = cb;
-    }
-  };
-}]);
+  getAccount() {
+    return this.account;
+  }
+}
+
+angular.module("App").service("authService", AuthService);

@@ -1,6 +1,6 @@
 "use strict"
 
-import Encryption from './../utils//Encryption.js';
+import Encryption from './../utils/Encryption.js';
 
 export default class AuthCtrl {
   constructor(accountCtrl) {
