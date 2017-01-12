@@ -37,9 +37,10 @@ class MessangerCtrl extends IController {
   }
 
   send() {
-    if(this.messages && this.messages.lenght > 0) {
+    if(this.messages && this.messages.length > 0) {
       const account = this.authService.getAccount();
-      messangerService.send(account.name, "Public", this.messages);
+      console.log('SEND', this.messages);
+      this.messangerService.send(account.name, "Public", this.messages);
       this.messages = "";
     }
   }

@@ -4,8 +4,9 @@ class AuthCtrl extends IController {
   constructor(authService) {
     super();
 
-    this.authService = authService;
-    this.isLogin = true;
+    this.authService  = authService;
+    this.isLogin      = true;
+    this.isLoginError = false;
 
     this.loginModel = {
       email: "",
@@ -21,16 +22,15 @@ class AuthCtrl extends IController {
   }
 
   onSubmite() {
-    let self = this;
-
     if (this.isLogin) {
       // TODO CHEACK LOGIN MODEL
       this.authService.login(this.loginModel, (err) => {
         if (err) {
           // TODO SHOW ERROR
+          this.isLoginError = true;
           console.error(err);
         } else {
-          console.log("Account", self.authService.getAccount());
+          console.log("Account", this.authService.getAccount());
           window.location = "/#!/main";
         }
       });
@@ -40,7 +40,7 @@ class AuthCtrl extends IController {
         if(err) 
           console.error(err);
         else {
-          self.isLogin = true;
+          this.isLogin = true;
         }  
       });
     }
