@@ -1,6 +1,10 @@
 "use strict"
 
-import SocketServer  from 'socketcluster-server';
+import async        from 'async' 
+import SocketServer from 'socketcluster-server';
+import EnDecrypter  from './../utils/EnDecrypter'; 
+
+const key = "dsadsadsfdd";
 
 export default class MessengerController {
 
@@ -29,15 +33,19 @@ export default class MessengerController {
 
       webSocket.on("msg", (data) => {
         console.log("msg connect id: ", webSocket.id);
-        this.dbMessangesCtrl.add(data.message, data.groupName, data.userName, (err, msg) => {
-          if(err) 
-            console.log("Error save msg");
-          else {
-            let sockets = this.clients.values();
-            for (var socket of sockets) {
-              socket.emit("newMessage", msg);
+        const encrypter = new EnDecrypter();
+        encrypter.cryptoData(data.message, key, (encryptoMsg) => {
+          this.dbMessangesCtrl.add(encryptoMsg, data.groupName, data.userName, (err, msg) => {
+            if (err)
+              console.log("Error save msg");
+            else {
+              let sockets = this.clients.values();
+              msg.message = data.message;
+              for (let socket of sockets) {
+                socket.emit("newMessage", msg);
+              }
             }
-          } 
+          }); 
         });
        });
 
@@ -56,7 +64,16 @@ export default class MessengerController {
               console.log("err laod data messages");
               res("err laod data messages", null);
             } else {
-              res(null, data);
+              async.map(data, (item, cb) => {
+                console.log(item);
+                 const encrypter = new EnDecrypter();
+                 encrypter.uncryptoData(item.messages, key, (uncrypto) => {
+                   item.messages = uncrypto;
+                   cb(null, item)
+                 });
+              }, (err, resualt) => {
+                res(null, resualt);
+              });
             }
           });
         } else {
