@@ -4,4 +4,4 @@ for install
   npm install --global babel-cli
 for run
   run mongo db
-  babel-node app
+  npm run app
