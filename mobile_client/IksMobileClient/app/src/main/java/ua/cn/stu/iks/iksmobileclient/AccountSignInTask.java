@@ -3,6 +3,11 @@ package ua.cn.stu.iks.iksmobileclient;
 import android.content.Intent;
 import android.os.AsyncTask;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -27,7 +32,7 @@ public class AccountSignInTask extends AsyncTask<Void, Void, Boolean> {
         // TODO HTTP REQUEST POST /auth and two params in body email and pass for example {email: "111@gmail.com", pass: "123456"}
 
         try {
-            String strUrl = "http://192.168.0.105:8080/auth";
+            String strUrl = "http://192.168.0.101:8080/auth";
 
             String strBody = "email=" + email + "&pass=" + password;
             URL url = new URL(strUrl);
@@ -46,8 +51,29 @@ public class AccountSignInTask extends AsyncTask<Void, Void, Boolean> {
 
             int responseCode = conn.getResponseCode();
             if (responseCode == 200) {
-                System.out.println("Auth successfull");
-                // OK read account information {id: "", name: ""}
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                InputStream is = conn.getInputStream();
+                byte[] buffer  = new byte[16384];
+                int bytesRead;
+
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    baos.write(buffer, 0, bytesRead);
+                }
+                byte[] data = baos.toByteArray();
+
+                String resultString = new String(data, "UTF-8");
+
+                JSONTokener parser = new JSONTokener(resultString);
+                JSONObject obj     = (JSONObject) parser.nextValue();
+
+                String id   = obj.getString("id");
+                String name = obj.getString("name");
+
+                if(id == null || name == null || id.isEmpty() || name.isEmpty())
+                    return false;
+
+                Account account = new Account(id, name);
+                AccountService.set(account);
                 return true;
             }
 
@@ -76,27 +102,3 @@ public class AccountSignInTask extends AsyncTask<Void, Void, Boolean> {
         parent.showProgress(false);
     }
 }
-/*
-*  ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-    if (responseCode == 200) {
-        is = conn.getInputStream();
-
-        byte[] buffer = new byte[8192]; // Такого вот размера буфер
-        // Далее, например, вот так читаем ответ
-        int bytesRead;
-        while ((bytesRead = is.read(buffer)) != -1) {
-            baos.write(buffer, 0, bytesRead);
-        }
-        data = baos.toByteArray();
-        resultString = new String(data, "UTF-8"); // {id : "String", name: "String"}
-        // JsonParser (id, name)
-
-        JSONObject mainObject = new JSONObject(resultString);
-
-        getJsonString("id")
-
-        get
-     }
-*
-* */
