@@ -8,9 +8,10 @@ const key = "dsadsadsfdd";
 
 export default class MessengerController {
 
-  constructor(httpServer, dbMessangesCtrl) {
+  constructor(httpServer, dbMessangesCtrl, dbAccountCtrl) {
     this.clients         = new Map();
     this.dbMessangesCtrl = dbMessangesCtrl;
+    this.dbAccountCtrl   = dbAccountCtrl;
     this.server          = SocketServer.attach(httpServer);
 
     this.server.on('connection', (webSocket) => {
@@ -24,6 +25,11 @@ export default class MessengerController {
           console.log("New connect id: ", webSocket.id);
           if(!this.clients.has(id)) {
             this.clients.set(id, webSocket);
+            this.dbAccountCtrl.update(id, null, null, null, null, true, (err) => {
+              if(err) 
+                console.error(err);
+              this.onChangeOnline("Public");
+            });
             res(null, "success");  
           } else {
             res("Acount is auth", null);
@@ -50,9 +56,18 @@ export default class MessengerController {
        });
 
        webSocket.on("disconnect", () => {
-         console.log("On close ");
+         console.log("On close :", webSocket.id);
          const id = webSocket.id;
          this.clients.delete(id);
+         this.dbAccountCtrl.update(id, null, null, null, null, false, (err) => {
+            if(err) 
+              console.error(err);
+            this.onChangeOnline("Public");
+         });
+      });
+
+      webSocket.on("getOnline", (data, res) => {
+        this.getAllOnlineByGroup("Public", (account) => res(null, account));
       });
 
       webSocket.on("getHistory", (data, res) => {
@@ -65,7 +80,6 @@ export default class MessengerController {
               res("err laod data messages", null);
             } else {
               async.map(data, (item, cb) => {
-                console.log(item);
                  const encrypter = new EnDecrypter();
                  encrypter.uncryptoData(item.messages, key, (uncrypto) => {
                    item.messages = uncrypto;
@@ -80,6 +94,28 @@ export default class MessengerController {
           res("err load data messages", null);
         }
       });
+    });
+  }
+
+  getAllOnlineByGroup(group, cb) {
+    console.log("getAllOnlineByGroup", group, cb);
+
+    this.dbAccountCtrl.getAllOnline((err, array) => {
+      console.log(array);
+      let accounts = [];
+      for (let item of array) {
+        accounts.push(item.name);
+      }
+      cb(accounts);
+    });
+  }
+
+  onChangeOnline(group) {
+    this.getAllOnlineByGroup(group, (accounts) => {
+      let sockets = this.clients.values();
+      for (let socket of sockets) {
+        socket.emit("changeOnline", accounts);
+      }
     });
   }
 

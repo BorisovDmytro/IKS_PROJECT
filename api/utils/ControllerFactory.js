@@ -8,7 +8,7 @@ export default class ControllerFactory {
     return new AuthCtrl(accountCtrl);
   }
 
-  static createMessengerController(httpServer, dbMsgCtrl) {
-    return new MessengerController(httpServer, dbMsgCtrl);
+  static createMessengerController(httpServer, dbMsgCtrl, dbAccountCtrl) {
+    return new MessengerController(httpServer, dbMsgCtrl, dbAccountCtrl);
   }
 }

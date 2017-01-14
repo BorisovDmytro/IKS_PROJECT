@@ -44,8 +44,14 @@ class MessangerService extends IController {
           alert("Error auth");
         cb(err);
       });
+
+      this.webSocket.on('changeOnline', (data) => this.listners["changeOnline"](data));
     });
   }
+
+  getOnlineByGroup(groupName, cb) {
+    this.webSocket.emit("getOnline", { groupName: groupName }, cb);
+  } 
 }
 
 angular.module("App").service('messangerService', MessangerService);
