@@ -6,6 +6,8 @@ import Encryption from './../utils/Encryption.js';
 
 const ObjectID = Mongodb.ObjectID;
 
+moment.locale('ru');
+
 export default class DBAccountCtrl {
   constructor(db) {
     this.collection = db.collection('accounts');  
@@ -74,5 +76,9 @@ export default class DBAccountCtrl {
 
   getAllOnline(cb) {
     this.collection.find({online: true}).toArray(cb);
+  }
+
+  getAll(cb) {
+    this.collection.find({}).toArray(cb);
   }
 }

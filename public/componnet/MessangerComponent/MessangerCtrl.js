@@ -22,11 +22,6 @@ class MessangerCtrl extends IController {
       this.animatedScrollDown(200, 0);
     });
 
-    this.messangerService.setListener('changeOnline', (data) => {
-      console.log("changeOnline", data);
-      this.timeout (() => this.online = data, 10);
-    });
-
     let account = this.authService.getAccount();
     if(!account) {
       window.location = "/";
@@ -38,11 +33,19 @@ class MessangerCtrl extends IController {
       if(err) {
         window.location = "/";
       } else  {
-        this.messangerService.getOnlineByGroup("Public", (err, data) => {
-          console.log("getOnlineByGroup", data);
-          this.online = data;
-        });
+        this.updateGroupClients();
+        setInterval(this.updateGroupClients.bind(this), 4000);
       }
+    });
+  }
+
+  updateGroupClients() {
+     this.messangerService.getGroupClients("Public", 
+     (err, data) => {
+        this.timeout(() => {
+          console.log("getGroupClients:", data);
+          this.online = data;
+        }, 0); 
     });
   }
 
