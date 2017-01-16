@@ -2,6 +2,8 @@
 
 import moment from 'moment';
 
+moment.locale('ru');
+
 export default class DBMessangesCtrl {
   constructor(db) {
     this.collection = db.collection('messanges');

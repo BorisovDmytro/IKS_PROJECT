@@ -28,7 +28,7 @@ connector.connect(config("dbUrl"), (db) => {
   const dbMgsCtrl     = DbFactory.createMessangesCtrl(db);
 
   const authCtrl  = ControllerFactory.createAuthCtrl(dbAccountCtrl);
-  const messenger = ControllerFactory.createMessengerController(httpServer, dbMgsCtrl); 
+  const messenger = ControllerFactory.createMessengerController(httpServer, dbMgsCtrl, dbAccountCtrl); 
 
   app.post("/auth", authCtrl.login.bind(authCtrl));
   app.put("/auth",  authCtrl.signUp.bind(authCtrl));

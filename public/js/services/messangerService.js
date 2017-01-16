@@ -35,7 +35,7 @@ class MessangerService extends IController {
     this.webSocket.on('connect', () => {
       console.log('CONNECTED');
 
-      this.webSocket.on('newMessage', (data) => self.listners["newMessage"](data));
+      this.webSocket.on('newMessage', (data) => this.listners["newMessage"](data));
 
       this.webSocket.emit("auth", { id: account.id }, (err, answ) => {
         if (!err)
@@ -45,6 +45,10 @@ class MessangerService extends IController {
         cb(err);
       });
     });
+  }
+
+  getGroupClients(groupName, cb) {
+    this.webSocket.emit("getGroupAccountData", { groupName: groupName }, cb);
   }
 }
 
