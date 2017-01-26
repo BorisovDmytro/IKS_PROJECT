@@ -6,6 +6,8 @@ import Encryption from './../utils/Encryption.js';
 
 const ObjectID = Mongodb.ObjectID;
 
+moment.locale('ru');
+
 export default class DBAccountCtrl {
   constructor(db) {
     this.collection = db.collection('accounts');  
@@ -21,7 +23,8 @@ export default class DBAccountCtrl {
           name:      name,
           pass:      Encryption.saltAndHash(pass),
           create:    moment().format('MMMM Do YYYY, h:mm:ss a'),
-          loginTime: moment().format('MMMM Do YYYY, h:mm:ss a')
+          loginTime: moment().format('MMMM Do YYYY, h:mm:ss a'),
+          online: false
         };
 
         this.collection.insert(account, { safe: true }, (err, res) => {
@@ -34,15 +37,16 @@ export default class DBAccountCtrl {
     });
   }
   // если параметр null, то задает старое значение в обекте 
-  update(id, email, name, pass, loginTime, cb) {
+  update(id, email, name, pass, loginTime, online, cb) {
     this.collection.findOne({_id: ObjectID(id)}, (err, doc) => {
       if(err) {
         cb("not found");
       } else {
         doc.email     = email     || doc.email;
-        doc.name      = name      || doc.email;
-        doc.pass      = pass      || doc.email;
+        doc.name      = name      || doc.name;
+        doc.pass      = pass      || doc.pass;
         doc.loginTime = loginTime || doc.loginTime;
+        doc.online    = online
 
         this.collection.save(doc, { safe: true }, (err) => {
           if(err)
@@ -68,5 +72,13 @@ export default class DBAccountCtrl {
 
   getByEmailOrName(email, name, cb) {
     this.collection.findOne({ $or: [{email: email}, {name: name}] }, cb);
+  }
+
+  getAllOnline(cb) {
+    this.collection.find({online: true}).toArray(cb);
+  }
+
+  getAll(cb) {
+    this.collection.find({}).toArray(cb);
   }
 }

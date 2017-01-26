@@ -56,5 +56,11 @@ export default class AuthCtrl {
       });
     }
   }
+
+  getAccounts(req, res) {
+    this.accountCtrl.getAll((err, accounts) => {
+      res.send(accounts);
+    });
+  }
 }
 

@@ -4,8 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "run": "babel-node app.js",
-    "build": "babel . -d .dist --ignore=\"node_modules\""
+    "app": "babel-node app.js"
   },
   "keywords": [],
   "author": "Borysov Dmytro",
@@ -34,5 +33,8 @@
     "socketcluster-server": "latest",
     "url": "latest",
     "ws": "latest"
+  },
+  "dependencies": {
+    "babel-cli": "^6.18.0"
   }
 }
