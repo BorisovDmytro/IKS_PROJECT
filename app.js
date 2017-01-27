@@ -17,10 +17,10 @@ const connector    = new DbConnector();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
-app.use('/', Express.static(__dirname + "/public"));
+app.use('/', Express.static(__dirname + "/web/build"));
 
 app.get("/", function(req, res) {
-  res.sendFile(__dirname + "/public/html/index.html");
+  res.sendFile(__dirname + "/web/build/html/index.html");
 });
 
 connector.connect(config("dbUrl"), (db) => {
