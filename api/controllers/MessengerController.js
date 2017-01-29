@@ -47,8 +47,8 @@ export default class MessengerController {
 
   messageHandler(data) {
     const encrypter = new EnDecrypter();
-   // encrypter.cryptoData(data.message, key, (encryptoMsg) => {
-      this.dbMessangesCtrl.add(data.message, data.groupName, data.userName, (err, msg) => {
+    encrypter.cryptoData(data.message, key, (encryptoMsg) => {
+      this.dbMessangesCtrl.add(encryptoMsg, data.groupName, data.userName, (err, msg) => {
         if (err)
           console.log("Error save msg");
         else {
@@ -60,7 +60,7 @@ export default class MessengerController {
           }
         }
       });
-   // });
+    });
   }
 
   historyHandler(data, res) {
@@ -72,7 +72,7 @@ export default class MessengerController {
           console.log("err laod data messages");
           res("err laod data messages", null);
         } else {
-          /*async.map(data, (item, cb) => {
+          async.map(data, (item, cb) => {
             const encrypter = new EnDecrypter();
             encrypter.uncryptoData(item.messages, key, (uncrypto) => {
               console.log('uncrypto', uncrypto);
@@ -81,8 +81,8 @@ export default class MessengerController {
             });
           }, (err, resualt) => {
             res(null, resualt);
-          });*/
-          res(null, data);
+          });
+          //res(null, data);
         }
       });
     } else {
