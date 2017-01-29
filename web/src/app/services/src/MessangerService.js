@@ -23,9 +23,8 @@ export default (app) => {
       var requestData = { groupName: groupName, cursore: cursore };
       // Add cheack data and webScoket
       this.webSocket.emit("getHistory", requestData, (err, data) => {
-        if (!err) {
-          this.listners["history"](data);
-        }
+        console.log('Get history', err, data);
+        this.listners["history"](data);
       });
     }
 
