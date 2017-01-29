@@ -1,39 +1,33 @@
 "use strict"
 
-import moment     from 'moment';
-import Mongodb    from 'mongodb';
+import moment from 'moment';
+import Mongodb from 'mongodb';
 import Encryption from './../utils/Encryption.js';
 
 const ObjectID = Mongodb.ObjectID;
 
+//_id ( auto gen)
+//name
+//size
+//owner
+//groupName
+
 export default class DBFileCtrl {
   constructor(db) {
-    this.collection = db.collection('files');  
+    this.collection = db.collection('files');
   }
-}
 
-
-    //_id ( auto gen)
-    //name
-    //size
-    //owner
-    //groupName
-
-export default class DBAccountCtrl {
-  constructor(db) {
-    this.collection = db.collection('files');  
-  }
-insert(email, name, pass, cb) {
-    this.collection.findOne({ [{ name: name }] }, (err, doc) => {
+  insert(email, name, pass, cb) {
+    this.collection.findOne({ name: name }, (err, doc) => {
       if (doc) {
         cb("data-token");
       } else {
         var file = {
-          name:      name,
-          size:      size,
-          owner:     owner,
+          name: name,
+          size: size,
+          owner: owner,
           groupName: groupName
-          
+
         };
 
         this.collection.insert(account, { safe: true }, (err, res) => {
@@ -45,24 +39,24 @@ insert(email, name, pass, cb) {
       }
     });
   }
-// если параметр null, то задает старое значение в обекте 
+  // если параметр null, то задает старое значение в обекте 
   update(id, email, name, pass, loginTime, cb) {
-    this.collection.findOne({_id: ObjectID(id)}, (err, doc) => {
-      if(err) {
+    this.collection.findOne({ _id: ObjectID(id) }, (err, doc) => {
+      if (err) {
         cb("not found");
       } else {
 
-        doc.name      = name || doc.name,
-        doc.size      = size || doc.size,
-        doc.owner     = owner || doc.owner,
-        doc.groupName = groupName || doc.groupName
+        doc.name = name || doc.name,
+          doc.size = size || doc.size,
+          doc.owner = owner || doc.owner,
+          doc.groupName = groupName || doc.groupName
 
         this.collection.save(doc, { safe: true }, (err) => {
-          if(err)
+          if (err)
             cb("error save");
-          else 
+          else
             cb(null, doc);
-        });        
+        });
       }
     });
   }
@@ -72,19 +66,19 @@ insert(email, name, pass, cb) {
   }
 
   getById(id, cb) {
-    this.collection.findOne({_id: new ObjectID(id)}, cb);
+    this.collection.findOne({ _id: new ObjectID(id) }, cb);
   }
 
   getByName(name, cb) {
-    this.collection.findOne({name: name}, cb);
+    this.collection.findOne({ name: name }, cb);
   }
 
-   getBygroupName(groupName, cb) {
-    this.collection.findOne({groupName: groupName}, cb);
+  getBygroupName(groupName, cb) {
+    this.collection.findOne({ groupName: groupName }, cb);
   }
 
   getByNameOrOwner(ename, owner, cb) {
-    this.collection.findOne({ $or: [{name: name}, {owner: owner}] }, cb);
+    this.collection.findOne({ $or: [{ name: name }, { owner: owner }] }, cb);
   }
 }
 
