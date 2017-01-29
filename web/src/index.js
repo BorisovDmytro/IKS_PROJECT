@@ -1,13 +1,18 @@
-var app = angular.module("App", ["ngRoute"]);
+
+import services   from './app/services';
+import components from './app/componets';
+
+const app = angular.module("App", ["ngRoute"]);
+
+services(app);
+components(app);
 
 app.config(function($routeProvider) {
   $routeProvider
   .when("/", {
     template: "<auth></auth>"
-    //templateUrl : "html/auth.html"
   })
   .when("/main", {
     template: "<messanger></messanger>"
-    //templateUrl : "html/main.html"
   });
 });
