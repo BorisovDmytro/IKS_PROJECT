@@ -17,10 +17,20 @@
 
     <div class="panel panel-default" 
       style="position: fixed; margin-left: 0px; margin-top: 50px; width: 300px; height: calc(100% - 150px); float: left; height: 100%;">
-      <div class="panel-body" style="width: 100%; padding: 5px;">
-        <div class="well">Public group</div>
-        <ul class="list-group">
-          <a class="list-group-item" ng-repeat="item in $ctrl.online">
+        <div class="panel-body" style="width: 100%; padding: 5px;">
+          <ul class="nav nav-tabs">
+          <li ng-class="$ctrl.mIsGroup ? '' : 'active'"><a ng-click="$ctrl.mIsGroup = false; $ctrl.currentGroup = null;">Users</a></li>
+          <li ng-class="$ctrl.mIsGroup ? 'active' : ''"><a ng-click="$ctrl.mIsGroup = true; $ctrl.toUser = null;">Groups</a></li>
+        </ul>
+        
+        <ul class="list-group" ng-show="$ctrl.mIsGroup">
+           <a ng-class="Public != $ctrl.currentGroup ? 'list-group-item active' : 'list-group-item'" ng-click="$ctrl.onGroupCLick('Public')">
+              Public
+           </a>
+        </ul>
+
+        <ul class="list-group" ng-show="!$ctrl.mIsGroup">
+          <a ng-class="item.name == $ctrl.toUser.name ? 'list-group-item active' : 'list-group-item'" ng-repeat="item in $ctrl.online" ng-click="$ctrl.onUserCLick(item)">
             {{item.name}} 
             <div style="float: right;">
               <span ng-class="item.online ? 'label label-success' : 'label label-danger'">Online</span>

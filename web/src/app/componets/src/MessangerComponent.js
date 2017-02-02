@@ -15,6 +15,11 @@ export default (app) => {
         this.timeout(() => this.animatedScrollDown(100, 0), 10);
       });
 
+      this.messangerService.setListener('private', (data) => {
+        this.model = data;
+        this.timeout(() => this.animatedScrollDown(100, 0), 10);
+      });
+
       this.messangerService.setListener('newMessage', (data) => {
         this.model.push(data);
         this.animatedScrollDown(200, 0);
@@ -38,10 +43,17 @@ export default (app) => {
     }
 
     updateGroupClients() {
+      const account = this.authService.getAccount();
       this.messangerService.getGroupClients("Public",
         (err, data) => {
           this.timeout(() => {
             console.log("getGroupClients:", data);
+            for(let i = 0; i < data.length; i ++) {
+              if(data[i].id == account.id) {
+                data.splice(i, 1);
+                break;
+              }
+            }
             this.online = data;
           }, 0);
         });
@@ -51,8 +63,16 @@ export default (app) => {
       if (this.messages && this.messages.length > 0) {
         const account = this.authService.getAccount();
         console.log('SEND', this.messages);
-        this.messangerService.send(account.name, "Public", this.messages);
-        this.messages = "";
+
+        if (this.mIsGroup) {
+          console.log('Send to group ');
+          this.messangerService.send(account.name, "Public", "", account.id, this.messages);
+          this.messages = "";
+        } else {
+          console.log('Send to private ');
+          this.messangerService.send(account.name, "", this.toUser.id, account.id, this.messages);
+          this.messages = "";
+        }
       }
     }
 
@@ -62,6 +82,17 @@ export default (app) => {
           scrollTop: $("#msgBody")[0].scrollHeight
         }, animationTime);
       }, waitTime);
+    }
+
+    onGroupCLick(groupName) {
+      this.currentGroup = groupName;
+      this.messangerService.getHistory(groupName, 0);
+    }
+
+    onUserCLick(user) {
+      const account = this.authService.getAccount();
+      this.toUser   = user;
+      this.messangerService.getPrivate(this.toUser.id, account.id);
     }
   }
 
