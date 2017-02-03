@@ -63,8 +63,14 @@ export default class MessengerController {
               client.get().emit("newMessage", msg);
             }
           } else {
-            this.clients.get(data.from).get().emit("newMessage", msg);
-            this.clients.get(data.to).get().emit("newMessage", msg);
+            let userSender = this.clients.get(data.from);
+            if(userSender)
+              userSender.get().emit("newMessage", msg);
+
+            let userListner = this.clients.get(data.to);  
+            if(userListner)
+              userListner.get().emit("newMessage", msg);
+
           }
         }
       });
