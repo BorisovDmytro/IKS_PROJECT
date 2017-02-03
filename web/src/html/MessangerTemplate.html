@@ -1,81 +1,96 @@
-<div ng-init="$ctrl.initialize()">
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand">Messanger</a>
-        </div>
-        <ul class="nav navbar-nav">
-          <!--li class="active"><a href="#">Home</a></li-->
-        </ul>
-
-      <ul class="nav navbar-nav navbar-right">
-        <li><a> {{$ctrl.nikname}}</a></li>
-        <li><a href="#!/"> Вийти</a></li>
+<div class="navbar-fixed">
+  <nav>
+    <div class="nav-wrapper teal darken-1">
+      <a href="#" class="brand-logo">Logo</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a>{{$ctrl.nikname}}</a></li>
+        <li><a href="#!/">Выйти</a></li>
       </ul>
-      </div>
-    </nav>
-
-    <div class="panel panel-default" 
-      style="position: fixed; margin-left: 0px; margin-top: 50px; width: 300px; height: calc(100% - 150px); float: left; height: 100%;">
-        <div class="panel-body" style="width: 100%; padding: 5px;">
-          <ul class="nav nav-tabs">
-          <li ng-class="$ctrl.mIsGroup ? '' : 'active'"><a ng-click="$ctrl.mIsGroup = false; $ctrl.currentGroup = null;">Users</a></li>
-          <li ng-class="$ctrl.mIsGroup ? 'active' : ''"><a ng-click="$ctrl.mIsGroup = true; $ctrl.toUser = null;">Groups</a></li>
-        </ul>
-        
-        <ul class="list-group" ng-show="$ctrl.mIsGroup">
-           <a ng-class="Public != $ctrl.currentGroup ? 'list-group-item active' : 'list-group-item'" ng-click="$ctrl.onGroupCLick('Public')">
-              Public
-           </a>
-        </ul>
-
-        <ul class="list-group" ng-show="!$ctrl.mIsGroup">
-          <a ng-class="item.name == $ctrl.toUser.name ? 'list-group-item active' : 'list-group-item'" ng-repeat="item in $ctrl.online" ng-click="$ctrl.onUserCLick(item)">
-            {{item.name}} 
-            <div style="float: right;">
-              <span ng-class="item.online ? 'label label-success' : 'label label-danger'">Online</span>
-            </div>  
-          </a>
-        </ul>
-      </div>    
     </div>
+  </nav>
+</div>
 
-    </div>     
-    <div class="panel panel-default" 
-         style="margin-left: 0px; margin-top: 50px; width: calc(100% - 300px); margin-bottom: 100px; float: right;">
 
-    <div class="panel-body" style="width: 100%;">
-
-      <div ng-repeat="msg in $ctrl.model" 
-          ng-class="msg.owner == $ctrl.nikname ? 'media alert alert-info myMsg' : 'media alert alert-success userMsg'">
-        <div class="media-body">
-          <h4 class="media-heading">{{msg.owner}}</h4>
-          <p>{{msg.date}}</p>
-          <p>{{msg.messages}}</p>
+<div class="card grey lighten-4" ng-init="$ctrl.initialize()"
+      style="position: fixed; margin-left: 0px; width: 300px; height: calc(100% - 150px); float: left; height: 100%;">
+    <div class="card-content">
+      <p style="text-align: center;"></p>
+    </div>
+    <div class="card-tabs">
+      <a ng-class="$ctrl.mIsGroup ? 'waves-effect waves-light btn' : 'btn disabled'"  style="width: 140px;" ng-click="$ctrl.mIsGroup = false; $ctrl.currentGroup = null;">Акаунты</a>
+      <a ng-class="$ctrl.mIsGroup ? 'btn disabled' : 'waves-effect waves-light btn'"  style="width: 140px;" ng-click="$ctrl.mIsGroup = true; $ctrl.toUser = null;">Групи</a>
+    </div>
+    <div class="card-content grey lighten-4">
+      <div ng-show="!$ctrl.mIsGroup">
+        <div class="collection">
+          <a ng-repeat="item in $ctrl.online" ng-class="item.name == $ctrl.toUser.name ? 'collection-item active' : 'collection-item'" ng-click="$ctrl.onUserCLick(item)">
+            {{item.name}}
+          </a>
         </div>
       </div>
 
+      <div ng-show="$ctrl.mIsGroup">
+        <div class="collection">
+          <a ng-class="'Public' == $ctrl.currentGroup ? 'collection-item active' : 'collection-item'" ng-click="$ctrl.onGroupCLick('Public')">
+            Public
+          </a>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <div class="navbar-fixed-bottom well" style="margin-bottom: 0px; padding: 5px; height: 80px; width: calc(100% - 300px); margin-left: 300px;">
-    <button type="button" class="btn btn-default btn-lg" style="float:left; padding: 5px;  width: 55px;">
-      <img src="/images/papeclip.png" width="50" height="50" />
-    </button>
-
-    <input type="text" class="form-control" id="messagetext" 
-          placeholder="Enter message" ng-model="$ctrl.messages" 
-          style="margin-left: 5px; margin-right: 5px; height: 60px; width: calc(100% - 120px); float: left; resize: none; ">
-    </input>
-
-    <button type="button" class="btn btn-default btn-lg" 
-            style="float:right; padding: 5px; width: 55px;" ng-click="$ctrl.send()">
-      <img src="/images/send.png" width="50" height="50" />
-    </button>
-  </div>   
-
-</div>  
+      
+</div>
 
 
 
+<div class="card grey lighten-4"  style="position: fixed; bottom: 0px; left: 300px; padding: 5px; height: 100px; width: calc(100% - 300px); z-index: 1000;">  
+    <div class="card-content grey lighten-4" style="padding: 5px;">
+      <div class="row">
 
+        <div class="col s2">
+          <a class="waves-effect waves-light btn">Файл</a>
+        </div>
+
+        <div class="col s8">
+          <div class="row">
+            <div class="input-field col s12">
+              <textarea id="textarea1" class="materialize-textarea" ng-model="$ctrl.messages"></textarea>
+              <label for="textarea1">Сообщение</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s2">
+          <a class="waves-effect waves-light btn" ng-click="$ctrl.send()">Отправить</a>
+        </div>
+
+      </div>
+    </div>
+</div>
+
+<div class="card white"  style="margin-left: 0px; width: calc(100% - 300px); margin-bottom: 120px; float: right;">  
+    <div class="card-content white">
+      
+       <div ng-repeat="msg in $ctrl.model" 
+             ng-class="msg.owner == $ctrl.nikname ? 'card-panel blue lighten-5  myMsg' : 'card-panel grey lighten-5  userMsg'">
+          <div class="row">
+            <div class="col s8">
+              <h5>
+                {{msg.owner}}
+              </h5>
+            </div>
+            <div class="col s4">
+              {{msg.date}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s12">
+              <span class="black-text">
+                {{msg.messages}}
+              </span>
+            </div>
+          </div>
+        </div>
+
+    </div>
+</div>
+  

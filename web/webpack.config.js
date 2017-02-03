@@ -14,6 +14,7 @@ module.exports = {
       {from: 'lib',     to: 'lib'},
       {from: 'images',  to: 'images'},
       {from: 'css',     to: 'css'},
+      {from: 'fonts',   to: 'fonts'}
     ])
   ],
 
