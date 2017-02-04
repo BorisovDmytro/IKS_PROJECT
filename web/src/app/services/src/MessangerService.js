@@ -39,6 +39,8 @@ export default (app) => {
     }
 
     initialize(account, cb) {
+      console.log('Initialize ....... ok');
+
       this.webSocket = new socketCluster.connect();
 
       this.webSocket.on('connect', () => {
@@ -59,6 +61,11 @@ export default (app) => {
 
     getGroupClients(groupName, cb) {
       this.webSocket.emit("getGroupAccountData", { groupName: groupName }, cb);
+    }
+
+    exit() {
+      /*if(this.webSocket)
+        this.webSocket.*/
     }
   }
 

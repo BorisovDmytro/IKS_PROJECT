@@ -2,11 +2,11 @@
 export default (app) => {
   class MessangerComponent {
     constructor(authService, messangerService, $timeout) {
-      this.authService = authService;
+      this.authService      = authService;
       this.messangerService = messangerService;
-      this.timeout = $timeout;
-      this.messages = "";
-      this.model = [];
+      this.timeout          = $timeout;
+      this.messages         = "";
+      this.model            = [];
     }
 
     initialize() {
@@ -42,20 +42,23 @@ export default (app) => {
       });
     }
 
+    logOut() {
+      window.location.reload();
+    }
+
     updateGroupClients() {
       const account = this.authService.getAccount();
-      this.messangerService.getGroupClients("Public",
-        (err, data) => {
-          this.timeout(() => {
-            console.log("getGroupClients:", data);
-            for(let i = 0; i < data.length; i ++) {
-              if(data[i].id == account.id) {
-                data.splice(i, 1);
-                break;
-              }
+      this.messangerService.getGroupClients("Public", (err, data) => {
+          
+          console.log("getGroupClients:", data);
+          for(let i = 0; i < data.length; i ++) {
+            if(data[i].id == account.id) {
+              data.splice(i, 1);
+              break;
             }
-            this.online = data;
-          }, 0);
+          }
+
+          this.timeout(() => this.users = data, 10);
         });
     }
 
@@ -87,11 +90,13 @@ export default (app) => {
     onGroupCLick(groupName) {
       this.currentGroup = groupName;
       this.messangerService.getHistory(groupName, 0);
+      this.toUser = null;
     }
 
     onUserCLick(user) {
       const account = this.authService.getAccount();
       this.toUser   = user;
+      this.currentGroup = null;
       this.messangerService.getPrivate(this.toUser.id, account.id);
     }
   }
