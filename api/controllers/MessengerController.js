@@ -22,6 +22,7 @@ export default class MessengerController {
 
       webSocket.on("msg",                 this.messageHandler.bind(this));
       webSocket.on("getHistory",          this.historyHandler.bind(this));
+      webSocket.on("getPrivate",          this.getPrivateMessage.bind(this));
       webSocket.on("getGroupAccountData", this.groupDataHandler.bind(this));
     });
   }
@@ -44,19 +45,32 @@ export default class MessengerController {
           console.error(err);
       });
   }
-
+// msg, groupName, owner, to
   messageHandler(data) {
     const encrypter = new EnDecrypter();
+    //{ userName: userName, groupName: groupName, message: message, to: to, from: from }
+    //msg, groupName, owner, to, from,
     encrypter.cryptoData(data.message, key, (encryptoMsg) => {
-      this.dbMessangesCtrl.add(encryptoMsg, data.groupName, data.userName, (err, msg) => {
+      this.dbMessangesCtrl.add(encryptoMsg, data.groupName, data.userName, data.to, data.from, (err, msg) => {
         if (err)
           console.log("Error save msg");
         else {
-          let clients = this.clients.values();
           msg.messages = data.message;
-          
-          for (let client of clients) {
-            client.get().emit("newMessage", msg);
+
+          if(data.groupName != "") {
+            let clients = this.clients.values();
+            for (let client of clients) {
+              client.get().emit("newMessage", msg);
+            }
+          } else {
+            let userSender = this.clients.get(data.from);
+            if(userSender)
+              userSender.get().emit("newMessage", msg);
+
+            let userListner = this.clients.get(data.to);  
+            if(userListner)
+              userListner.get().emit("newMessage", msg);
+
           }
         }
       });
@@ -90,12 +104,37 @@ export default class MessengerController {
     }
   }
 
+  getPrivateMessage(data, res) {
+    const to = data.to;
+    const from = data.from;
+
+    this.dbMessangesCtrl.getPrivateMessages(to, from, 0, (err, data) => {
+       if (err) {
+          console.log("err laod data messages");
+          res("err laod data messages", null);
+        } else {
+          async.map(data, (item, cb) => {
+            console.log(item);
+            const encrypter = new EnDecrypter();
+            encrypter.uncryptoData(item.messages, key, (uncrypto) => {
+              console.log('uncrypto', uncrypto);
+              item.messages = uncrypto;
+              cb(null, item)
+            });
+          }, (err, resualt) => {
+            res(null, resualt);
+          });
+        }
+    });
+  }
+
   groupDataHandler(data, res) {
     this.dbAccountCtrl.getAll((err, array) => {
       let clientInfo = [];
 
       for (let account of array) {
         clientInfo.push({
+          id: account._id,
           name: account.name,
           online: account.online
         });

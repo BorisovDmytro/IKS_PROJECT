@@ -6,7 +6,8 @@ export default (app) => {
     constructor() {
       this.listners = {
         "history": new Function(),
-        "newMessage": new Function()
+        "newMessage": new Function(),
+        "private": new Function()
       };
     }
 
@@ -15,8 +16,8 @@ export default (app) => {
       this.listners[name] = cbHandlers;
     }
 
-    send(userName, groupName, message) {
-      this.webSocket.emit("msg", { userName: userName, groupName: groupName, message: message });
+    send(userName, groupName, to, from, message) {
+      this.webSocket.emit("msg", { userName: userName, groupName: groupName, message: message, to: to, from: from });
     }
 
     getHistory(groupName, cursore) {
@@ -28,7 +29,18 @@ export default (app) => {
       });
     }
 
+    getPrivate(to, from) {
+      const requestData = {to: to, from: from};
+
+      this.webSocket.emit("getPrivate", requestData, (err, data) => {
+        console.log('Get private', err, data);
+        this.listners['private'](data);
+      });
+    }
+
     initialize(account, cb) {
+      console.log('Initialize ....... ok');
+
       this.webSocket = new socketCluster.connect();
 
       this.webSocket.on('connect', () => {
@@ -38,7 +50,8 @@ export default (app) => {
 
         this.webSocket.emit("auth", { id: account.id }, (err, answ) => {
           if (!err)
-            this.getHistory("Public", 0);
+            console.log('auth ... ok');
+           // this.getHistory("Public", 0);
           else
             alert("Error auth");
           cb(err);
@@ -48,6 +61,11 @@ export default (app) => {
 
     getGroupClients(groupName, cb) {
       this.webSocket.emit("getGroupAccountData", { groupName: groupName }, cb);
+    }
+
+    exit() {
+      /*if(this.webSocket)
+        this.webSocket.*/
     }
   }
 
