@@ -1,38 +1,31 @@
 'use strict'
 
-
 function AuthService($http, configService) {
-  this.account = null;
+  console.log("Create service AuthService");
   this.http = $http;
   this.configService = configService;
+}
+
+AuthService.prototype.setLoginSuccessFullCallBack = function(cb) {
+  this.cbLoginSuccess = cb;
 }
 
 AuthService.prototype.login = function (model, cb) {
   var self = this;
 
+  var url = this.configService.absUrl + '/auth';
+  console.log(model, url);
   this.http({
     method: 'POST',
-    url: this.configService.url + '/auth',
+    url: url,
     data: model
   }).then(function (answ) {
     self.account = answ.data;
+    console.log("Save account", self.account);
     cb(null);
   }, function (err) {
+    console.log("Error account");
     self.account = null;
-    cb(err);
-  });
-}
-
-AuthService.prototype.login = function (model, cb) {
-  this.http({
-    method: 'PUT',
-    url: this.configService.url + '/auth',
-    data: model
-  }).then(function (answ) {
-    // ok
-    cb(null, answ.data); // success
-  }, function (err) {
-    // err
     cb(err);
   });
 }
@@ -40,6 +33,5 @@ AuthService.prototype.login = function (model, cb) {
 AuthService.prototype.getAccount = function () {
   return this.account;
 }
-
 
 angular.module("app").service("authService", AuthService);

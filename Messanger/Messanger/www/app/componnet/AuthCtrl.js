@@ -1,49 +1,47 @@
 'use strict'
 
-function AuthCtrl(authService) {
+function AuthCtrl(authService, $timeout) {
   this.authService = authService;
   this.isLogin = true;
   this.isLoginError = false;
 
   this.loginModel = {
-    email: "",
-    pass: ""
+    email: "111@gmail.com",
+    pass: "123456"
   };
 
-  this.signUpModel = {
-    email: "",
-    name: "",
-    pass: ""
-  };
+  this.visible = true;
+  //
+  window.addEventListener('resize', this.onInit);
+}
 
+AuthCtrl.prototype.onInit = function () {
+  var h = window.innerHeight;
+  var w = window.innerWidth;
+  var style = {};
+  if (w > h) {
+    $('#auth').attr('style', 'font-size: 26px; height: 100vh; margin: 0px;');
+  } else {
+    $('#auth').attr('style', 'font-size: 26px; height: 100vh; margin: 0px; padding-top: 20%; padding-bottom: 20%;');
+  }
 }
 
 AuthCtrl.prototype.onSubmite = function () {
   var self = this;
 
-  if (this.isLogin) {
-    // TODO CHEACK LOGIN MODEL
-    this.authService.login(this.loginModel, function(err) {
-      if (err) {
-        // TODO SHOW ERROR
-        self.isLoginError = true;
-        console.error(err);
-      } else {
-        console.log("Account", self.authService.getAccount());
-        //window.location = "/#!/main";
-      }
-    });
-  } else {
-    // TODO CHEACK SIGNUP MODEL
-
-    this.authService.signUp(this.signUpModel, function (err) {
-      if (err)
-        console.error(err);
-      else {
-        self.isLogin = true;
-      }
-    });
-  }
+  this.authService.login(self.loginModel, function (err) {
+    if (err) {
+      // TODO SHOW ERROR
+      self.isLoginError = true;
+      console.error(err);
+    } else {
+      console.log("Account", self.authService.getAccount());
+      self.visible = false;
+      self.authService.cbLoginSuccess();
+      //window.location = "/#!/main";
+    }
+  });
+ 
 }
 
 

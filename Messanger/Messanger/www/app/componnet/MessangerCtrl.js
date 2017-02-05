@@ -4,6 +4,16 @@ function MessangerCtrl(authService, messangerService, $timeout) {
   this.timeout = $timeout;
   this.messages = "";
   this.model = [];
+
+  this.visible = false;
+
+  var self = this;
+  authService.setLoginSuccessFullCallBack(function () {
+    console.log('setLoginSuccessFullCallBack');
+    self.visible = true;
+
+    self.initialize();
+  });
 }
 
 MessangerCtrl.prototype.initialize = function () {
@@ -20,6 +30,9 @@ MessangerCtrl.prototype.initialize = function () {
   });
 
   var account = this.authService.getAccount();
+
+  console.log('Get account', account, this.authService);
+
   if (!account) {
     window.location = "/";
     return;
@@ -28,8 +41,10 @@ MessangerCtrl.prototype.initialize = function () {
   this.nikname = account.name;
   this.messangerService.initialize(account, function (err) {
     if (err) {
-      window.location = "/";
+      console.log("Error connect", err);
+      // window.location = "/";
     } else {
+      self.model = "Connected done";
       self.updateGroupClients();
       setInterval(self.updateGroupClients.bind(self), 4000);
     }

@@ -1,7 +1,11 @@
 'use strcit'
 
 
-function MessangerService() {
+function MessangerService(configService) {
+
+  console.log("Create messanger service");
+  this.configService = configService;
+
   this.listners = {
     "history": new Function(),
     "newMessage": new Function()
@@ -32,16 +36,21 @@ MessangerService.prototype.getHistory = function (groupName, cursore) {
 MessangerService.prototype.initialize = function (account, cb) {
   var options = {
     protocol: 'http',
-    hostname: '192.168.0.109',
-    port: 8080
+    hostname: this.configService.url,
+    port: this.configService.port
   };
-
-  this.webSocket = new socketCluster.connect(options);
+  console.log('webSocket', options);
+  try {
+    this.webSocket = new socketCluster.connect(options);
+  } catch (exp) {
+    console.log('Error connection', exp);
+  }
+  
 
   var self = this;
 
   this.webSocket.on('connect', function() {
-    console.log('CONNECTED');
+    console.log('webSocket..............CONNECTED');
 
     self.webSocket.on('newMessage', function (data) { self.listners["newMessage"](data); });
 
