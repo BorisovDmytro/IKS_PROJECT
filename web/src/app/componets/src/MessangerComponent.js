@@ -94,8 +94,8 @@ export default (app) => {
     }
 
     onUserCLick(user) {
-      const account = this.authService.getAccount();
-      this.toUser   = user;
+      const account     = this.authService.getAccount();
+      this.toUser       = user;
       this.currentGroup = null;
       this.messangerService.getPrivate(this.toUser.id, account.id);
     }
