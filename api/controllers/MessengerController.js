@@ -45,35 +45,34 @@ export default class MessengerController {
           console.error(err);
       });
   }
-// msg, groupName, owner, to
+
   messageHandler(data) {
     const encrypter = new EnDecrypter();
-    //{ userName: userName, groupName: groupName, message: message, to: to, from: from }
-    //msg, groupName, owner, to, from,
-    encrypter.cryptoData(data.message, key, (encryptoMsg) => {
-      this.dbMessangesCtrl.add(encryptoMsg, data.groupName, data.userName, data.to, data.from, (err, msg) => {
-        if (err)
-          console.log("Error save msg");
-        else {
-          msg.messages = data.message;
 
-          if(data.groupName != "") {
-            let clients = this.clients.values();
-            for (let client of clients) {
-              client.get().emit("newMessage", msg);
-            }
-          } else {
-            let userSender = this.clients.get(data.from);
-            if(userSender)
-              userSender.get().emit("newMessage", msg);
+    const encryptoMsg = encrypter.cryptoData(data.message, key);
+    this.dbMessangesCtrl.add(encryptoMsg, data.groupName, data.userName, data.to, data.from,
+    (err, msg) => {
+      if (err)
+        console.log("Error save msg");
+      else {
+        msg.messages = data.message;
 
-            let userListner = this.clients.get(data.to);  
-            if(userListner)
-              userListner.get().emit("newMessage", msg);
-
+        if(data.groupName != "") {
+          let clients = this.clients.values();
+          for (let client of clients) {
+            client.get().emit("newMessage", msg);
           }
+        } else {
+          let userSender = this.clients.get(data.from);
+          if(userSender)
+            userSender.get().emit("newMessage", msg);
+
+          let userListner = this.clients.get(data.to);  
+          if(userListner)
+            userListner.get().emit("newMessage", msg);
+
         }
-      });
+      }
     });
   }
 
@@ -86,7 +85,7 @@ export default class MessengerController {
           console.log("err laod data messages");
           res("err laod data messages", null);
         } else {
-          async.map(data, (item, cb) => {
+          /*async.map(data, (item, cb) => {
             const encrypter = new EnDecrypter();
             encrypter.uncryptoData(item.messages, key, (uncrypto) => {
               console.log('uncrypto', uncrypto);
@@ -95,8 +94,17 @@ export default class MessengerController {
             });
           }, (err, resualt) => {
             res(null, resualt);
-          });
+          });*/
           //res(null, data);
+
+
+          const encrypter = new EnDecrypter();
+
+          for(let itm of data) {
+            itm.messages = encrypter.uncryptoData(itm.messages, key);
+          }
+
+          res(null, data);
         }
       });
     } else {
@@ -113,17 +121,13 @@ export default class MessengerController {
           console.log("err laod data messages");
           res("err laod data messages", null);
         } else {
-          async.map(data, (item, cb) => {
-            console.log(item);
-            const encrypter = new EnDecrypter();
-            encrypter.uncryptoData(item.messages, key, (uncrypto) => {
-              console.log('uncrypto', uncrypto);
-              item.messages = uncrypto;
-              cb(null, item)
-            });
-          }, (err, resualt) => {
-            res(null, resualt);
-          });
+         const encrypter = new EnDecrypter();
+
+          for(let itm of data) {
+            itm.messages = encrypter.uncryptoData(itm.messages, key);
+          }
+
+          res(null, data);
         }
     });
   }
