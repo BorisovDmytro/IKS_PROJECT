@@ -17,9 +17,9 @@ const connector    = new DbConnector();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
-app.use('/', Express.static(__dirname + "/public/js/common"));
-app.use('/', Express.static(__dirname + "/public/css"));
-app.use('/', Express.static(__dirname + "/public/images"));
+app.use('/', Express.static(__dirname + "/web/build/lib"));
+app.use('/', Express.static(__dirname + "/web/build/css"));
+app.use('/', Express.static(__dirname + "/web/build/images"));
 app.use('/', Express.static(__dirname + "/admin"));
 app.use('/', Express.static(__dirname + "/admin/html/index.html"));
 

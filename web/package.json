@@ -8,7 +8,7 @@
   },
   "scripts": {
     "watch": "webpack -w ./client",
-    "build-release": "webpack",
+    "build": "webpack",
     "build-debug": "webpack --devtool source-map"
   },
   "devDependencies": {

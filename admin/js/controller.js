@@ -8,7 +8,6 @@ function AdminCtrl($scope, $http) {
   };
 
   $scope.onAddClick = function () {
-    console.log("On click ");
     $('#addDlg').modal("show");
   }
 
@@ -33,7 +32,7 @@ function AdminCtrl($scope, $http) {
       url: '/auth',
       data: model
     }).then(function (answ) {
-      model = {
+      $scope.signUpModel = {
         email: "",
         name: "",
         pass: ""
