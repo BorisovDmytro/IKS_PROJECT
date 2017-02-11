@@ -1,6 +1,39 @@
 'use strcit'
 
 export default (app) => {
+  function EnDecrypter() {
+
+    this.cryptoData = function (data, key) {
+      const ciphertext = CryptoJS.AES.encrypt(data, key);
+      return ciphertext.toString();
+    }
+
+    this.uncryptoData = function (data, key) {
+      const bytes     = CryptoJS.AES.decrypt(data, key);
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      return decrypted;
+    }
+  }
+
+  function KeyGen() {
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    this.gen = 3;
+    this.mod = 17;
+    this.private = getRandomInt(0, 20);
+    this.key = 0;
+
+    this.getPrivate = function () {
+      return Math.pow(this.gen, this.private) % this.mod;
+    }
+
+    this.setPublic = function (pb) {
+      this.key = Math.pow(pb, this.private) % this.mod;
+    }
+  }
+
 
   class MessangerService {
     constructor() {
@@ -17,6 +50,8 @@ export default (app) => {
     }
 
     send(userName, groupName, to, from, message) {
+      const endcrp = new EnDecrypter();
+      message = endcrp.cryptoData(message, this.key);
       this.webSocket.emit("msg", { userName: userName, groupName: groupName, message: message, to: to, from: from });
     }
 
@@ -30,11 +65,19 @@ export default (app) => {
     }
 
     getPrivate(to, from) {
-      const requestData = {to: to, from: from};
+      const requestData = {to: to, from: from };
 
       this.webSocket.emit("getPrivate", requestData, (err, data) => {
         console.log('Get private', err, data);
-        this.listners['private'](data);
+        const endcrp = new EnDecrypter();
+        const items  = [];
+        
+        for(let itm of data) {
+          itm.messages = endcrp.uncryptoData(itm.messages, this.key);
+          items.push(itm);
+        }
+
+        this.listners['private'](items);
       });
     }
 
@@ -46,12 +89,20 @@ export default (app) => {
       this.webSocket.on('connect', () => {
         console.log('CONNECTED');
 
-        this.webSocket.on('newMessage', (data) => this.listners["newMessage"](data));
+        this.webSocket.on('newMessage', (data) => { 
+          const endcrp = new EnDecrypter();
+          data.messages = endcrp.uncryptoData(data.messages, this.key);
+          this.listners["newMessage"](data); 
+        });
 
-        this.webSocket.emit("auth", { id: account.id }, (err, answ) => {
-          if (!err)
-            console.log('auth ... ok');
-           // this.getHistory("Public", 0);
+        this.keyGen = new KeyGen();
+
+        this.webSocket.emit("auth", { id: account.id, private: this.keyGen.getPrivate()}, (err, answ) => {
+          if (!err) {
+             this.keyGen.setPublic(answ.private);
+             this.key = this.keyGen.key.toString() + account.id;
+             console.log('auth ... ok KEY: ', this.key);
+          }
           else
             alert("Error auth");
           cb(err);

@@ -6,7 +6,7 @@ import EnDecrypter       from './../utils/EnDecrypter';
 import ClientInstance    from './ClientInstance';
 import ClientsController from './ClientsController'
 
-const key = "dsadsadsfdd";
+const keyBD = "dsadsadsfdd";
 
 export default class MessengerController {
 
@@ -49,7 +49,10 @@ export default class MessengerController {
   messageHandler(data) {
     const encrypter = new EnDecrypter();
 
-    const encryptoMsg = encrypter.cryptoData(data.message, key);
+    let userSender = this.clients.get(data.from);
+    data.message   = encrypter.uncryptoData(data.message, userSender.key);
+
+    const encryptoMsg = encrypter.cryptoData(data.message, keyBD);
     this.dbMessangesCtrl.add(encryptoMsg, data.groupName, data.userName, data.to, data.from,
     (err, msg) => {
       if (err)
@@ -57,20 +60,24 @@ export default class MessengerController {
       else {
         msg.messages = data.message;
 
-        if(data.groupName != "") {
+        if (data.groupName != "") {
           let clients = this.clients.values();
           for (let client of clients) {
             client.get().emit("newMessage", msg);
           }
         } else {
           let userSender = this.clients.get(data.from);
-          if(userSender)
+          if (userSender) {
+            msg.messages = encrypter.cryptoData(data.message, userSender.key);
             userSender.get().emit("newMessage", msg);
-
+          }
+          
           let userListner = this.clients.get(data.to);  
-          if(userListner)
+          if (userListner) {
+            msg.messages = encrypter.cryptoData(data.message, userListner.key);
             userListner.get().emit("newMessage", msg);
-
+          }
+            
         }
       }
     });
@@ -85,23 +92,11 @@ export default class MessengerController {
           console.log("err laod data messages");
           res("err laod data messages", null);
         } else {
-          /*async.map(data, (item, cb) => {
-            const encrypter = new EnDecrypter();
-            encrypter.uncryptoData(item.messages, key, (uncrypto) => {
-              console.log('uncrypto', uncrypto);
-              item.messages = uncrypto;
-              cb(null, item)
-            });
-          }, (err, resualt) => {
-            res(null, resualt);
-          });*/
-          //res(null, data);
-
 
           const encrypter = new EnDecrypter();
 
           for(let itm of data) {
-            itm.messages = encrypter.uncryptoData(itm.messages, key);
+            itm.messages = encrypter.uncryptoData(itm.messages, keyBD);
           }
 
           res(null, data);
@@ -113,22 +108,26 @@ export default class MessengerController {
   }
 
   getPrivateMessage(data, res) {
-    const to = data.to;
+    const to   = data.to;
     const from = data.from;
 
     this.dbMessangesCtrl.getPrivateMessages(to, from, 0, (err, data) => {
        if (err) {
-          console.log("err laod data messages");
+
           res("err laod data messages", null);
         } else {
          const encrypter = new EnDecrypter();
+         const instance  = this.clients.get(from);
+         const key = instance.key;
 
-          for(let itm of data) {
-            itm.messages = encrypter.uncryptoData(itm.messages, key);
-          }
+         for (let itm of data) {
+           let msg = encrypter.uncryptoData(itm.messages, keyBD);
+           itm.messages = encrypter.cryptoData(msg, key);
+           console.log(itm);
+         }
 
-          res(null, data);
-        }
+         res(null, data);
+       }
     });
   }
 

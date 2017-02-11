@@ -6,12 +6,7 @@ export default class AuthCtrl {
   constructor(accountCtrl) {
     this.accountCtrl = accountCtrl;
   }
-  // {email: "1@gmail.com", pass: "55446"}
 
-  // /agaga/:params?data=10
-  //agaga/20?data=10 
-  //req.params.params // 20
-  //req.query.data // 10
   login(req, res) {
     const email = req.body.email;
     const pass = req.body.pass;
