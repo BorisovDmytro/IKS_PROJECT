@@ -13,49 +13,59 @@ export default class DBAccountCtrl {
     this.collection = db.collection('accounts');  
   }
 
-  insert(email, name, pass, cb) {
-    this.collection.findOne({ $or: [{ email: email }, { name: name }] }, (err, doc) => {
-      if (doc) {
-        cb("data-token");
-      } else {
-        var account = {
-          email:     email,
-          name:      name,
-          pass:      Encryption.saltAndHash(pass),
-          create:    moment().format('MMMM Do YYYY, h:mm:ss a'),
-          loginTime: moment().format('MMMM Do YYYY, h:mm:ss a'),
-          online: false
-        };
+  insert(email, name, pass) {
+    const prom = new Promise((resolve, reject) => {
+      this.collection.findOne({ $or: [{ email: email }, { name: name }] }, (err, doc) => {
+        if(doc) {
+          reject("data-token");
+        } else {
+          const account = {
+            email:     email,
+            name:      name,
+            pass:      Encryption.saltAndHash(pass),
+            create:    moment().format('MMMM Do YYYY, h:mm:ss a'),
+            loginTime: moment().format('MMMM Do YYYY, h:mm:ss a'),
+            online:    false
+          };
 
-        this.collection.insert(account, { safe: true }, (err, res) => {
-          if (err)
-            cb(err);
-          else
-            cb(null, res.ops[0]);
-        });
-      }
+          this.collection.insert(account, { safe: true }, (err, res) => {
+            if (err)
+              reject(err);
+            else
+              resolve(res.ops[0]);
+          });
+        }
+      });
     });
+
+    return prom;
   }
   // если параметр null, то задает старое значение в обекте 
-  update(id, email, name, pass, loginTime, online, cb) {
-    this.collection.findOne({_id: ObjectID(id)}, (err, doc) => {
-      if(err) {
-        cb("not found");
-      } else {
-        doc.email     = email     || doc.email;
-        doc.name      = name      || doc.name;
-        doc.pass      = pass      || doc.pass;
-        doc.loginTime = loginTime || doc.loginTime;
-        doc.online    = online
+  update(id, email, name, pass, loginTime, online) {
+    const prom = new Promise((resolve, reject) => {
 
-        this.collection.save(doc, { safe: true }, (err) => {
-          if(err)
-            cb("error save");
-          else 
-            cb(null, doc);
-        });        
-      }
+      this.collection.findOne({ _id: ObjectID(id) }, (err, doc) => {
+        if (err) {
+          reject("not found");
+        } else {
+          doc.email = email || doc.email;
+          doc.name = name || doc.name;
+          doc.pass = pass || doc.pass;
+          doc.loginTime = loginTime || doc.loginTime;
+          doc.online = online
+
+          this.collection.save(doc, { safe: true }, (err) => {
+            if (err)
+              reject("error save");
+            else
+              resolve(doc);
+          });
+        }
+      });
+
     });
+
+    return prom;
   }
 
   remove(id, cb) {
@@ -66,12 +76,32 @@ export default class DBAccountCtrl {
     this.collection.findOne({_id: new ObjectID(id)}, cb);
   }
 
-  getByEmail(email, cb) {
-    this.collection.findOne({email: email}, cb);
+  getByEmail(email) {
+    const prom = new Promise((resolve, reject) => {
+      this.collection.findOne({email: email}, (err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res);
+        }
+      });
+    });
+
+    return prom;
   }
 
-  getByEmailOrName(email, name, cb) {
-    this.collection.findOne({ $or: [{email: email}, {name: name}] }, cb);
+  getByEmailOrName(email, name) {
+    const prom = new Promise((resolve, reject) => {
+      this.collection.findOne({ $or: [{email: email}, {name: name}] }, (err, account) => {
+        if (err || !account) {
+          reject(err);
+        } else {
+          resolve(account);
+        }
+      });
+    });
+
+    return prom;
   }
 
   getAllOnline(cb) {
@@ -79,6 +109,16 @@ export default class DBAccountCtrl {
   }
 
   getAll(cb) {
-    this.collection.find({}).toArray(cb);
+    const prom = new Promise((resolve, reject) => {
+      this.collection.find({}).toArray((err, array) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(array);
+        }
+      });
+    });
+
+    return prom;
   }
 }

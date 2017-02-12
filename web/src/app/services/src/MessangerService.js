@@ -59,7 +59,6 @@ export default (app) => {
       var requestData = { groupName: groupName, cursore: cursore };
       // Add cheack data and webScoket
       this.webSocket.emit("getHistory", requestData, (err, data) => {
-        console.log('Get history', err, data);
         this.listners["history"](data);
       });
     }
@@ -68,7 +67,8 @@ export default (app) => {
       const requestData = {to: to, from: from };
 
       this.webSocket.emit("getPrivate", requestData, (err, data) => {
-        console.log('Get private', err, data);
+        console.log('getPrivate:', data);
+
         const endcrp = new EnDecrypter();
         const items  = [];
         
@@ -101,7 +101,6 @@ export default (app) => {
           if (!err) {
              this.keyGen.setPublic(answ.private);
              this.key = this.keyGen.key.toString() + account.id;
-             console.log('auth ... ok KEY: ', this.key);
           }
           else
             alert("Error auth");

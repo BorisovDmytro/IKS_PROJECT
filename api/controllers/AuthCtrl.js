@@ -9,22 +9,25 @@ export default class AuthCtrl {
 
   login(req, res) {
     const email = req.body.email;
-    const pass = req.body.pass;
+    const pass  = req.body.pass;
 
-    if (!email || !pass)
+    if (!email || !pass) {
       res.status(404).send("not valid data");
-    else {
-      this.accountCtrl.getByEmail(email, (err, account) => {
-        if (err)
-          res.status(404).send("not valid data");
-        else {
-          if (Encryption.validatePassword(pass, account.pass))
-            res.status(200).send({ id: account._id, name: account.name });
-          else
-            res.status(404).send("not valid data");
-        }
-      });
+      return;
     }
+      
+    this.accountCtrl
+    .getByEmail(email)
+    .then((account) => {
+      if (Encryption.validatePassword(pass, account.pass))
+        res.status(200).send({ id: account._id, name: account.name });
+      else
+        res.status(404).send("not valid data");
+    })
+    .catch((err) => {
+       res.status(404).send("not valid data");
+    });
+
   }
 
   signUp(req, res) {
@@ -32,30 +35,30 @@ export default class AuthCtrl {
     const pass  = req.body.pass;
     const name  = req.body.name;
 
-    if (!email || !pass || !name)
-      res.status(400).send("not valid data");
-    else {
-      this.accountCtrl.getByEmailOrName(email, name, (err, doc) => {
-        console.log("get account", err, doc)
-        if (!err && doc) {
-          res.status(400).send("not valid data");
-        } else {
-          this.accountCtrl.insert(email, name, pass, (err, doc) => {
-            if (!err) {
-              res.status(200).send("success");
-            } else {
-              res.status(400).send("not valid data");
-            }
-          });
-        }
-      });
+    if (!email || !pass || !name) {
+       res.status(400).send("not valid data");
+       return;
     }
+
+    this.accountCtrl
+    .insert(email, name, pass)
+    .then((acocunt) => {
+      res.status(200).send("success");
+    })
+    .catch((err) => {
+        res.status(400).send("not valid data");
+    });
+
   }
 
   getAccounts(req, res) {
-    this.accountCtrl.getAll((err, accounts) => {
-      res.send(accounts);
+    this.accountCtrl
+    .getAll()
+    .then((accounts) => {
+      res.status(200).send(accounts);
+    })
+    .catch((err) => {
+      res.status(400).send("not valid data");
     });
   }
 }
-

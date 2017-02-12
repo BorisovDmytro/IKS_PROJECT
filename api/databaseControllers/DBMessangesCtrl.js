@@ -10,40 +10,72 @@ export default class DBMessangesCtrl {
     this.limit = 50;
   }
 
-  add(msg, groupName, owner, to, from, cb) {
+  add(msg, groupName, owner, to, from) {
     const data = {
       messages: msg,
-      group:    groupName,
-      owner:    owner,
-      to:       to,  
-      from:     from,
-      date:     moment().format('MMMM Do YYYY, h:mm:ss a'),
+      group: groupName,
+      owner: owner,
+      to: to,
+      from: from,
+      date: moment().format('MMMM Do YYYY, h:mm:ss a'),
     };
 
-    this.collection.insert(data, { safe: true },
-      (err, res) => {
-        if (err)
-          cb(err);
-        else
-          cb(null, res.ops[0]);
-      });
+    const promise = new Promise((resolve, reject) => {
+      this.collection.insert(data, { safe: true },
+        (err, res) => {
+          if (err)
+            reject(err);
+          else
+            resolve(res.ops[0]);
+        });
+    });
+
+    return promise;
   }
 
-  getPrivateMessages(userOne, userTwo, cursore, cb) {
-    const file = {$or: [{to : userOne, from: userTwo}, {to : userTwo, from: userOne}]};
+  getPrivateMessages(userOne, userTwo, cursore) {
+    const prom = new Promise((resolve, reject) => {
+      const file = { $or: [{ to: userOne, from: userTwo }, { to: userTwo, from: userOne }] };
 
-    const count = this.collection.find(file).count();
-    let next   = count - (cursore + 1) * this.limit;
-    next = next < 0 ? 0 : next;
-    this.collection.find(file).skip(next).limit(this.limit).toArray(cb);
+      const count = this.collection.find(file).count();
+      let next = count - (cursore + 1) * this.limit;
+      next = next < 0 ? 0 : next;
+      this
+        .collection
+        .find(file)
+        .skip(next)
+        .limit(this.limit)
+        .toArray((err, arr) => {
+          if (err)
+            reject(err);
+          else
+            resolve(arr);
+        });
+    });
+
+    return prom;
   }
 
-  getGroupMessages(groupName, cursore, cb) {
-    const count = this.collection.count(); // TODO calck using group name
-    let next    = count - (cursore + 1) * this.limit;
-    next = next < 0 ? 0 : next;
+  getGroupMessages(groupName, cursore) {
+    const prom = new Promise((resolve, reject) => {
+      const count = this.collection.count(); // TODO calck using group name
+      let next = count - (cursore + 1) * this.limit;
+      next = next < 0 ? 0 : next;
 
-    this.collection.find({group: groupName}).skip(next).limit(this.limit).toArray(cb);   
+      this
+        .collection
+        .find({ group: groupName })
+        .skip(next)
+        .limit(this.limit)
+        .toArray((err, arr) => {
+          if (err)
+            reject(err);
+          else
+            resolve(arr);
+        });
+    });
+
+    return prom;
   }
   // TODO ADD remove and auto clear skript
 }

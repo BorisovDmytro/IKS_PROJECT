@@ -15,49 +15,50 @@ export default class MessengerController {
     this.dbMessangesCtrl = dbMessangesCtrl;
     this.dbAccountCtrl   = dbAccountCtrl;
     this.server          = SocketServer.attach(httpServer);
-    
+
     this.server.on('connection', (webSocket) => {
       let client = new ClientInstance(webSocket, this);
-      this.clients.addUnAuth(client);
-
+      
       webSocket.on("msg",                 this.messageHandler.bind(this));
       webSocket.on("getHistory",          this.historyHandler.bind(this));
       webSocket.on("getPrivate",          this.getPrivateMessage.bind(this));
       webSocket.on("getGroupAccountData", this.groupDataHandler.bind(this));
+
+      this.clients.addUnAuth(client);
     });
   }
 
   addNewClient(id, client) {
     this.clients.set(id, client);
-    this.dbAccountCtrl.update(id, null, null, null, null, true,
-      (err) => {
-        if (err)
-          console.error(err);
-      });
+
+    this.dbAccountCtrl
+    .update(id, null, null, null, null, true)
+    .then(() => {})
+    .catch((err) => {
+       console.error(err);
+    }); 
   }
 
   removeClient(id) {
-    console.log("On close :", id);
     this.clients.delete(id);
-    this.dbAccountCtrl.update(id, null, null, null, null, false,
-      (err) => {
-        if (err)
-          console.error(err);
-      });
+
+    this.dbAccountCtrl.update(id, null, null, null, null, false)
+    .then(() => {})
+    .catch((err) => {
+      console.error(err);
+    }); 
   }
 
   messageHandler(data) {
     const encrypter = new EnDecrypter();
 
-    let userSender = this.clients.get(data.from);
-    data.message   = encrypter.uncryptoData(data.message, userSender.key);
-
+    let userSender    = this.clients.get(data.from);
+    data.message      = encrypter.uncryptoData(data.message, userSender.key);
     const encryptoMsg = encrypter.cryptoData(data.message, keyBD);
-    this.dbMessangesCtrl.add(encryptoMsg, data.groupName, data.userName, data.to, data.from,
-    (err, msg) => {
-      if (err)
-        console.log("Error save msg");
-      else {
+
+    this.dbMessangesCtrl
+      .add(encryptoMsg, data.groupName, data.userName, data.to, data.from)
+      .then((msg) => {
         msg.messages = data.message;
 
         if (data.groupName != "") {
@@ -71,68 +72,67 @@ export default class MessengerController {
             msg.messages = encrypter.cryptoData(data.message, userSender.key);
             userSender.get().emit("newMessage", msg);
           }
-          
-          let userListner = this.clients.get(data.to);  
+
+          let userListner = this.clients.get(data.to);
           if (userListner) {
             msg.messages = encrypter.cryptoData(data.message, userListner.key);
             userListner.get().emit("newMessage", msg);
           }
-            
         }
-      }
-    });
+      })
+      .catch((err) => { console.log("Error save msg:", err); });
   }
 
   historyHandler(data, res) {
-    console.log("getHistory", data);
 
-    if (data.cursore !== undefined && data.groupName !== undefined) {
-      this.dbMessangesCtrl.getGroupMessages(data.groupName, data.cursore, (err, data) => {
-        if (err) {
-          console.log("err laod data messages");
-          res("err laod data messages", null);
-        } else {
-
-          const encrypter = new EnDecrypter();
-
-          for(let itm of data) {
-            itm.messages = encrypter.uncryptoData(itm.messages, keyBD);
-          }
-
-          res(null, data);
-        }
-      });
-    } else {
+    if (data.cursore == undefined && data.groupName == undefined) {
       res("err load data messages", null);
+      return;
     }
+
+    this.dbMessangesCtrl
+      .getGroupMessages(data.groupName, data.cursore)
+      .then((data) => {
+        const encrypter = new EnDecrypter();
+        // TODO ADD CRYPTO FOR  GET GROUP HISTORY IN SERVER AND CLIENT 
+        for (let itm of data) {
+          itm.messages = encrypter.uncryptoData(itm.messages, keyBD);
+        }
+
+        res(null, data);
+      })
+      .catch((err) => {
+        res("err laod data messages", null);
+      });
   }
 
   getPrivateMessage(data, res) {
     const to   = data.to;
     const from = data.from;
+    
+    this.dbMessangesCtrl
+      .getPrivateMessages(to, from, 0)
+      .then((data) => {
+        const encrypter = new EnDecrypter();
+        const instance  = this.clients.get(from);
+        const key       = instance.key;
 
-    this.dbMessangesCtrl.getPrivateMessages(to, from, 0, (err, data) => {
-       if (err) {
+        for (let itm of data) {
+          let msg      = encrypter.uncryptoData(itm.messages, keyBD);
+          itm.messages = encrypter.cryptoData(msg, key);
+        }
 
-          res("err laod data messages", null);
-        } else {
-         const encrypter = new EnDecrypter();
-         const instance  = this.clients.get(from);
-         const key = instance.key;
-
-         for (let itm of data) {
-           let msg = encrypter.uncryptoData(itm.messages, keyBD);
-           itm.messages = encrypter.cryptoData(msg, key);
-           console.log(itm);
-         }
-
-         res(null, data);
-       }
-    });
+        res(null, data);
+      })
+      .catch((err) => {
+        res(err);
+      });
   }
 
   groupDataHandler(data, res) {
-    this.dbAccountCtrl.getAll((err, array) => {
+    this.dbAccountCtrl
+    .getAll()
+    .then((array) => {
       let clientInfo = [];
 
       for (let account of array) {
@@ -144,6 +144,9 @@ export default class MessengerController {
       }
 
       res(null, clientInfo);
+    })
+    .catch((err) => {
+       res(err);
     });
   }
 }

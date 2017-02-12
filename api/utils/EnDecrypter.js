@@ -7,7 +7,7 @@ export default class EnDecrypter {
   }
 
   uncryptoData(data, key) {
-    const bytes    = CryptoJS.AES.decrypt(data, key);
+    const bytes     = CryptoJS.AES.decrypt(data, key);
     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
     return decrypted;
   }
