@@ -45,25 +45,18 @@
 </div>
 
 <div class="card grey lighten-4"  
-     style="position: fixed; bottom: 0px; left: 300px; padding: 5px; height: 100px; width: calc(100% - 300px); z-index: 1000;">  
+     style="position: fixed; bottom: 0px; left: 300px; padding: 5px; margin: 0px; height: 100px; width: calc(100% - 300px); z-index: 1000;">  
     <div class="card-content grey lighten-4" style="padding: 5px;">
-      <div class="row">
 
-        <div class="col s10">
-          <div class="row">
-            <div class="input-field col s12">
-              <textarea id="textarea1" class="materialize-textarea" ng-model="$ctrl.messages"></textarea>
-              <label for="textarea1">Повідомлення</label>
-            </div>
+          <div class="input-field col s12" style="padding: 0px; margin: 0px; float: left; width: calc(100% - 60px);">
+            <textarea id="textarea1" class="materialize-textarea" ng-model="$ctrl.messages" ></textarea>
+            <label for="textarea1">Повідомлення</label>
           </div>
-        </div>
 
-        <div class="col s2">
-          <div class="row">
-            <a class="btn-floating btn-large waves-effect waves-light" ng-click="$ctrl.send()">
-              &#9658;
-            </a>
-          </div>  
+          <a class="btn-floating btn-large waves-effect waves-light" style="float: right;" ng-click="$ctrl.send()">
+            &#9658;
+          </a>
+
         </div>
 
       </div>
@@ -71,7 +64,7 @@
 </div>
 
 <div class="card white" id="msgBody"
-     style="margin-left: 0px; padding-bottom: 20px; width: calc(100% - 300px); float: right; padding: 2px; height: calc(100vh - 190px); overflow-y: auto;">  
+     style="margin-left: 0px; padding-bottom: 20px; width: calc(100% - 300px); margin: 0px; float: right; padding: 2px; height: calc(100vh - 170px); overflow-y: auto;">  
     <div class="card-content white">
       
        <div ng-repeat="msg in $ctrl.model" style="padding: 2px;"

@@ -62,8 +62,9 @@ export default class MessengerController {
         msg.messages = data.message;
 
         if (data.groupName != "") {
-          let clients = this.clients.values();
+          let clients = this.clients.values(); // TODO when add group support send to group members
           for (let client of clients) {
+            msg.messages = encrypter.cryptoData(data.message, client.key);
             client.get().emit("newMessage", msg);
           }
         } else {
@@ -85,21 +86,25 @@ export default class MessengerController {
 
   historyHandler(data, res) {
 
-    if (data.cursore == undefined && data.groupName == undefined) {
+    if (data.cursore == undefined ||
+        data.groupName == undefined || data.from == undefined) {
       res("err load data messages", null);
       return;
     }
 
     this.dbMessangesCtrl
       .getGroupMessages(data.groupName, data.cursore)
-      .then((data) => {
+      .then((array) => {
         const encrypter = new EnDecrypter();
+        const instance  = this.clients.get(data.from);
+        const key       = instance.key;
         // TODO ADD CRYPTO FOR  GET GROUP HISTORY IN SERVER AND CLIENT 
-        for (let itm of data) {
-          itm.messages = encrypter.uncryptoData(itm.messages, keyBD);
+        for (let itm of array) {
+          const msg    = encrypter.uncryptoData(itm.messages, keyBD);
+          itm.messages = encrypter.cryptoData(msg, key);
         }
 
-        res(null, data);
+        res(null, array);
       })
       .catch((err) => {
         res("err laod data messages", null);

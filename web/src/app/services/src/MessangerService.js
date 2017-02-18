@@ -55,11 +55,26 @@ export default (app) => {
       this.webSocket.emit("msg", { userName: userName, groupName: groupName, message: message, to: to, from: from });
     }
 
-    getHistory(groupName, cursore) {
-      var requestData = { groupName: groupName, cursore: cursore };
+    getHistory(groupName, cursore, from) {
+      var requestData = { groupName: groupName, cursore: cursore, from: from };
       // Add cheack data and webScoket
       this.webSocket.emit("getHistory", requestData, (err, data) => {
-        this.listners["history"](data);
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        console.log('getHistory', data);
+
+        const endcrp = new EnDecrypter();
+        const items  = [];
+        
+        for(let itm of data) {
+          itm.messages = endcrp.uncryptoData(itm.messages, this.key);
+          items.push(itm);
+        }
+
+        this.listners["history"](items);
       });
     }
 
@@ -67,7 +82,10 @@ export default (app) => {
       const requestData = {to: to, from: from };
 
       this.webSocket.emit("getPrivate", requestData, (err, data) => {
-        console.log('getPrivate:', data);
+        if (err) {
+          console.log(err);
+          return;
+        }
 
         const endcrp = new EnDecrypter();
         const items  = [];
@@ -90,7 +108,7 @@ export default (app) => {
         console.log('CONNECTED');
 
         this.webSocket.on('newMessage', (data) => { 
-          const endcrp = new EnDecrypter();
+          const endcrp  = new EnDecrypter();
           data.messages = endcrp.uncryptoData(data.messages, this.key);
           this.listners["newMessage"](data); 
         });

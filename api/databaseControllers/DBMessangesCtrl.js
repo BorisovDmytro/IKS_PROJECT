@@ -40,8 +40,7 @@ export default class DBMessangesCtrl {
       const count = this.collection.find(file).count();
       let next = count - (cursore + 1) * this.limit;
       next = next < 0 ? 0 : next;
-      this
-        .collection
+      this.collection
         .find(file)
         .skip(next)
         .limit(this.limit)
@@ -62,8 +61,7 @@ export default class DBMessangesCtrl {
       let next = count - (cursore + 1) * this.limit;
       next = next < 0 ? 0 : next;
 
-      this
-        .collection
+      this.collection
         .find({ group: groupName })
         .skip(next)
         .limit(this.limit)

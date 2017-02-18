@@ -88,8 +88,9 @@ export default (app) => {
     }
 
     onGroupCLick(groupName) {
+      const account     = this.authService.getAccount();
       this.currentGroup = groupName;
-      this.messangerService.getHistory(groupName, 0);
+      this.messangerService.getHistory(groupName, 0, account.id);
       this.toUser = null;
     }
 
