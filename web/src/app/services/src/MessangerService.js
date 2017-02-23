@@ -20,9 +20,9 @@ export default (app) => {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    this.gen = 3;
-    this.mod = 17;
-    this.private = getRandomInt(0, 20);
+    this.gen = getRandomInt(2, 9);
+    this.mod = 20;
+    this.private = getRandomInt(2, 9);
     this.key = 0;
 
     this.getPrivate = function () {
@@ -115,7 +115,14 @@ export default (app) => {
 
         this.keyGen = new KeyGen();
 
-        this.webSocket.emit("auth", { id: account.id, private: this.keyGen.getPrivate()}, (err, answ) => {
+        const data = {
+          id: account.id, 
+          private: this.keyGen.getPrivate(),
+          gen: this.keyGen.gen,
+          mod: this.keyGen.mod
+        }
+        console.log('Set public', data);
+        this.webSocket.emit("auth", data, (err, answ) => {
           if (!err) {
              this.keyGen.setPublic(answ.private);
              this.key = this.keyGen.key.toString() + account.id;

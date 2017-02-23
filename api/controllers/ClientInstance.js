@@ -3,9 +3,7 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    this.gen = 3;
-    this.mod = 17;
-    this.private = getRandomInt(0, 20);
+    this.private = getRandomInt(2, 9);
     this.key = 0;
 
     this.getPrivate = function () {
@@ -13,6 +11,7 @@
     }
 
     this.setPublic = function (pb) {
+      console.log('Set public', this.gen, this.mod, pb, this.private);
       this.key = Math.pow(pb, this.private) % this.mod;
     }
   }
@@ -31,8 +30,11 @@ export default class ClientInstance {
   }
 
   onAuthHandler(data, res) {
-    const id = data.id;
-    const pr = data.private;
+    const id  = data.id;
+    const pr  = data.private;
+    const gen = data.gen;
+    const mod = data.mod;
+
 
     this.keyGen = new KeyGen();
 
@@ -43,9 +45,11 @@ export default class ClientInstance {
       if (!this.parent.clients.has(id)) {
         console.log("New connect id: ", id);
         this.parent.addNewClient(id, this);
+
+        this.keyGen.gen = gen;
+        this.keyGen.mod = mod;
         this.keyGen.setPublic(pr);
         this.key = this.keyGen.key.toString() + id;
-
         res(null, {private: this.keyGen.getPrivate()});
       } else {
         res("Invalid auth");
