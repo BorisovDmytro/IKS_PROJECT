@@ -1,20 +1,35 @@
-  function KeyGen() {
-    function getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+class ClientDH {
+  constructor(isGenerate) {
+    if (isGenerate) {
+      this.gen = this._getGenerator(this._getRandomInt(0, 2));
+      this.mod = this._getRandomInt(111111111, 999999999);
     }
 
-    this.private = getRandomInt(2, 9);
+    this.private = this._getRandomInt(2, 8);
     this.key = 0;
-
-    this.getPrivate = function () {
-      return Math.pow(this.gen, this.private) % this.mod;
-    }
-
-    this.setPublic = function (pb) {
-      console.log('Set public', this.gen, this.mod, pb, this.private);
-      this.key = Math.pow(pb, this.private) % this.mod;
-    }
   }
+
+  getPrivate() {
+    return Math.pow(this.gen, this.private) % this.mod;
+  }
+
+  setPublic(pb) {
+    let key = Math.pow(pb, this.private) % this.mod;
+    key = key.toString(16);
+    while (key.lenght < 9) {
+      key += "0";
+    }
+    this.key = key;
+  }
+
+  _getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  _getGenerator(gen) {
+    return 2 * gen + 2;
+  }
+}
 
 export default class ClientInstance {
   constructor(webSocket, parent) {
@@ -35,8 +50,7 @@ export default class ClientInstance {
     const gen = data.gen;
     const mod = data.mod;
 
-
-    this.keyGen = new KeyGen();
+    this.clientDH = new ClientDH();
 
     if(!id)
       res("Invalid id");
@@ -46,11 +60,11 @@ export default class ClientInstance {
         console.log("New connect id: ", id);
         this.parent.addNewClient(id, this);
 
-        this.keyGen.gen = gen;
-        this.keyGen.mod = mod;
-        this.keyGen.setPublic(pr);
-        this.key = this.keyGen.key.toString() + id;
-        res(null, {private: this.keyGen.getPrivate()});
+        this.clientDH.gen = gen;
+        this.clientDH.mod = mod;
+        this.clientDH.setPublic(pr);
+        this.key = this.clientDH.key.toString() + id;
+        res(null, {private: this.clientDH.getPrivate()});
       } else {
         res("Invalid auth");
       }
