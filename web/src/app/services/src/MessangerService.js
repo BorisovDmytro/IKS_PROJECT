@@ -62,10 +62,10 @@ export default (app) => {
       this.listners[name] = cbHandlers;
     }
 
-    send(userName, groupName, to, from, message) {
+    send(userName, groupName, to, from, message, fileLink) {
       const endcrp = new EnDecrypter();
       message = endcrp.cryptoData(message, this.key);
-      this.webSocket.emit("msg", { userName: userName, groupName: groupName, message: message, to: to, from: from });
+      this.webSocket.emit("msg", { userName: userName, groupName: groupName, message: message, to: to, from: from, fileLink: fileLink });
     }
 
     getHistory(groupName, cursore, from) {

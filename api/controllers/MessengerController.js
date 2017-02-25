@@ -57,7 +57,7 @@ export default class MessengerController {
     const encryptoMsg = encrypter.cryptoData(data.message, keyBD);
 
     this.dbMessangesCtrl
-      .add(encryptoMsg, data.groupName, data.userName, data.to, data.from)
+      .add(encryptoMsg, data.groupName, data.userName, data.to, data.from, data.fileLink)
       .then((msg) => {
         msg.messages = data.message;
 

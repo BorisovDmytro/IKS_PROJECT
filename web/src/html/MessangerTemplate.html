@@ -47,18 +47,20 @@
 <div class="card grey lighten-4"  
      style="position: fixed; bottom: 0px; left: 300px; padding: 5px; margin: 0px; height: 100px; width: calc(100% - 300px); z-index: 1000;">  
     <div class="card-content grey lighten-4" style="padding: 5px;">
+          <div class="uploadButton btn-floating btn-large waves-effect waves-light grey lighten-3" style="float: left; padding: 5px;">
+            <img src="images/papeclip.png" width="45" height="45"/>
+            <input id="fileInpt" type="file" />
+          </div>
 
-          <div class="input-field col s12" style="padding: 0px; margin: 0px; float: left; width: calc(100% - 60px);">
+          <div class="input-field col s12" style="padding: 0px; margin: 0px; float: left; width: calc(100% - 150px);">
             <textarea id="textarea1" class="materialize-textarea" ng-model="$ctrl.messages" ></textarea>
             <label for="textarea1">Повідомлення</label>
           </div>
 
-          <a class="btn-floating btn-large waves-effect waves-light" style="float: right;" ng-click="$ctrl.send()">
-            &#9658;
+          <a class="btn-floating btn-large waves-effect waves-light grey lighten-3" style="float: right; padding: 5px;" ng-click="$ctrl.send()">
+            <img src="images/send.png" width="45" height="45"/>
           </a>
-
         </div>
-
       </div>
     </div>
 </div>
@@ -81,13 +83,12 @@
           </div>
           <div class="row">
             <div class="col s12">
-              <span class="black-text">
+              <span class="black-text" ng-show="!msg.fileLink">
                 {{msg.messages}}
               </span>
+              <a ng-href="{{msg.fileLink}}" ng-show="msg.fileLink">{{msg.messages}}</a>
             </div>
           </div>
         </div>
-
     </div>
 </div>
-  

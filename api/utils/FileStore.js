@@ -2,25 +2,25 @@
 
 import multer from 'multer';
 
-class FileStore {
+export default class FileStore {
   constructor() {
-
+    
   }
 
-  createMulter(destDir) {
+  _createMulter(destDir) {
     return multer.diskStorage({
       destination: function (req, file, callback) {
         callback(null, destDir);  
       },
       filename: function (req, file, callback) {
-        callback(null, req.query.id);
+        callback(null, req.query.id.toString());
       }
     });
   }
 
   create(destDir) {
     return multer({
-      storage: createMulter(destDir),
+      storage: this._createMulter(destDir),
       limits: {
         fileSize: 100000000
       }

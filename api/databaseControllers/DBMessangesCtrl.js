@@ -10,13 +10,14 @@ export default class DBMessangesCtrl {
     this.limit = 50;
   }
 
-  add(msg, groupName, owner, to, from) {
+  add(msg, groupName, owner, to, from, fileLink) {
     const data = {
       messages: msg,
       group: groupName,
       owner: owner,
       to: to,
       from: from,
+      fileLink: fileLink || null,
       date: moment().format('MMMM Do YYYY, h:mm:ss a'),
     };
 

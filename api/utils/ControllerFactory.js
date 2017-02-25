@@ -2,6 +2,7 @@
 
 import AuthCtrl            from "./../controllers/AuthCtrl"
 import MessengerController from "./../controllers/MessengerController";
+import FileCtrl            from './../controllers/FileCtrl'   
 
 export default class ControllerFactory {
   static createAuthCtrl(accountCtrl) {
@@ -10,5 +11,9 @@ export default class ControllerFactory {
 
   static createMessengerController(httpServer, dbMsgCtrl, dbAccountCtrl) {
     return new MessengerController(httpServer, dbMsgCtrl, dbAccountCtrl);
+  }
+
+  static createFileController(uplaodDir, dbFielCtrl) {
+    return new FileCtrl(uplaodDir, dbFielCtrl);
   }
 }

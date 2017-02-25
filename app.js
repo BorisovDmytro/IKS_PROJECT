@@ -5,6 +5,7 @@ import Http       from 'http';
 import config     from './config.js';
 import bodyParser from 'body-parser';
 import morgan     from 'morgan';
+import path       from 'path';
 
 import DbFactory         from "./api/utils/DBControllerFactory";
 import DbConnector       from "./api/databaseControllers/DBConnector";
@@ -24,14 +25,21 @@ app.get("/", function(req, res) {
 });
 
 connector.connect(config("dbUrl"), (db) => {
+  const uplaodDir = path.join(__dirname, 'upload');
+
   const dbAccountCtrl = DbFactory.createAccountCtrl(db);
   const dbMgsCtrl     = DbFactory.createMessangesCtrl(db);
+  const dbFileCtrl    = DbFactory.createFileCtrl(db);
 
   const authCtrl  = ControllerFactory.createAuthCtrl(dbAccountCtrl);
   const messenger = ControllerFactory.createMessengerController(httpServer, dbMgsCtrl, dbAccountCtrl); 
+  const fileCtrl  = ControllerFactory.createFileController(uplaodDir, dbFileCtrl);
 
   app.post("/auth", authCtrl.login.bind(authCtrl));
   app.put("/auth",  authCtrl.signUp.bind(authCtrl));
+
+  app.post('/file',          fileCtrl.upload.bind(fileCtrl));
+  app.get('/download/:name', fileCtrl.downloads.bind(fileCtrl));
 
   httpServer.listen(config('port', 8080), config('ip', '127.0.0.1'), () => {
     console.log(`Server start done ... `);
