@@ -23,20 +23,6 @@ export default (app) => {
       });
     }
 
-    signUp(model, cb) {
-      this.http({
-        method: 'PUT',
-        url: '/auth',
-        data: model
-      }).then(function (answ) {
-        // ok
-        cb(null, answ.data); // success
-      }, function (err) {
-        // err
-        cb(err);
-      });
-    }
-
     getAccount() {
       return this.account;
     }
