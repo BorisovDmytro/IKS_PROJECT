@@ -7,3 +7,19 @@
   width: 90%;
   float: left;
 }
+
+.uploadButton {
+  width: 125px;
+  height: 35px;
+  position: absolute;
+  display: block;
+}
+
+.uploadButton input[type=file] {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;   
+}
