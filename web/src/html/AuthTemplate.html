@@ -1,27 +1,39 @@
+<script>
+function openbox(status){
+   if(status == false){
+       document.getElementById("alert").hidden = true;
+    }else{
+       document.getElementById("alert").hidden = false;
+    }
+}
+</script>
+
+
 <div class="card grey lighten-4" style="margin: 5% 30%; font-size: 26px;">
   <div class="card-content">
     <p style="text-align: center;">Вхід до хмарного обміника повідомленнями</p>
   </div>
   <div class="card-content grey lighten-4">
     <div id="login">
-        <div class="row">
-            <div class="input-field col s12">
-              <input id="email"  type="email" class="validate" style="font-size: 26px;" ng-model="$ctrl.loginModel.email">
-              <label for="email" style="font-size: 26px;">Пошта</label>
-            </div>
-          </div>
-
-          <div class="row">
-
-            <div class="input-field col s12">
-              <input id="password" type="password" class="validate" style="font-size: 26px;" ng-model="$ctrl.loginModel.pass">
-              <label for="password" style="font-size: 26px;">Пароль</label>
-            </div>
-          </div>
-
-        <div class="card-action">
-          <a class="waves-effect waves btn-large" style="width: 100%;" ng-click="$ctrl.onSubmite()">Увійти</a>
+      <div class="row">
+        <div id="alert" hidden class="card-panel red lighten-1">Incorrect input data</div>
+        <div class="input-field col s12">
+          <input id="email" type="email" class="validate" style="font-size: 26px;" ng-model="$ctrl.loginModel.email">
+          <label for="email" style="font-size: 26px;">Пошта</label>
         </div>
+      </div>
+
+      <div class="row">
+
+        <div class="input-field col s12">
+          <input id="password" type="password" class="validate" style="font-size: 26px;" ng-model="$ctrl.loginModel.pass">
+          <label for="password" style="font-size: 26px;">Пароль</label>
+        </div>
+      </div>
+
+      <div class="card-action">
+        <a class="waves-effect waves btn-large" style="width: 100%;" ng-click="$ctrl.onSubmite()">Увійти</a>
       </div>
     </div>
   </div>
+</div>

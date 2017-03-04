@@ -12,18 +12,16 @@ export default (app) => {
         email: "111@gmail.com",
         pass: "695497"
       };
-
-      this.signUpModel = {
-        email: "",
-        name: "",
-        pass: ""
-      };
-
     }
 
     onSubmite() {
       if (this.isLogin) {
         // TODO CHEACK LOGIN MODEL
+        var resultM = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.loginModel.email);
+        var resultP = /^[A-Za-z0-9]{6,18}$/.test(this.loginModel.pass);
+        if(resultM == false && resultP == false){
+        openbox(true);
+        }
         this.authService.login(this.loginModel, (err) => {
           if (err) {
             // TODO SHOW ERROR
@@ -34,16 +32,7 @@ export default (app) => {
             window.location = "/#!/main";
           }
         });
-      } else {
-        // TODO CHEACK SIGNUP MODEL
-        this.authService.signUp(this.signUpModel, (err) => {
-          if (err)
-            console.error(err);
-          else {
-            this.isLogin = true;
-          }
-        });
-      }
+      } 
     }
   }
 
