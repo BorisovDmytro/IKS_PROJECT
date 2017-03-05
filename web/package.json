@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "watch": "webpack -w ./client",
+    "watch": "webpack -w ./src",
     "build": "webpack",
     "build-debug": "webpack --devtool source-map"
   },
