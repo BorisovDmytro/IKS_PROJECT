@@ -89,8 +89,18 @@ export default class DBAccountCtrl {
     this.collection.remove({ _id: new ObjectID(id) }, cb);
   }
 
-  getById(id, cb) {
-    this.collection.findOne({_id: new ObjectID(id)}, cb);
+  getById(id) {
+    const promise = new Promise((resolve, reject) => {
+      this.collection.findOne({_id: new ObjectID(id)}, (err, doc) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(doc);
+        }
+      });
+    })
+    
+    return promise;
   }
 
   getByEmail(email) {
