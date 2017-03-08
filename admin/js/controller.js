@@ -1,6 +1,6 @@
 app.controller("adminCtrl", AdminCtrl);
 
-function AdminCtrl($scope, $http) {
+function AdminCtrl($scope, $http, $timeout) {
   $scope.signUpModel = {
     email: "",
     name: "",
@@ -13,7 +13,6 @@ function AdminCtrl($scope, $http) {
 
   $scope.onAddAccount = function () {
     signUpRequest($scope.signUpModel);
-    refreshAccounts(); 
   }
 
   $scope.init = function() {
@@ -22,7 +21,9 @@ function AdminCtrl($scope, $http) {
 
   function refreshAccounts() {
     getAccounts(function(err, accounts) {
-      $scope.accounts = accounts;
+      $timeout(function () {
+        $scope.accounts = accounts;
+      }, 10);
     });
   }
 
@@ -37,7 +38,7 @@ function AdminCtrl($scope, $http) {
         name: "",
         pass: ""
       };
-      alert("Add account success");
+      refreshAccounts(); 
     }, function (err) {
       // err
       alert("Add account error");
