@@ -24,6 +24,13 @@ export default class MessengerController {
       webSocket.on("getPrivate",          this.getPrivateMessage.bind(this));
       webSocket.on("getGroupAccountData", this.groupDataHandler.bind(this));
 
+      // NEW API FOR UNREAD MESSAGESS
+      // data {id: id} id - client id
+      // result array [{id, name}]
+      webSocket.on('getUnread', this.getUnread.bind(this));
+      // data {id: id, readId: readId} - id -client, readId - id client unread message
+      webSocket.on('setRead',   this.setRead.bind(this));
+
       this.clients.addUnAuth(client);
     });
   }
@@ -49,6 +56,50 @@ export default class MessengerController {
     }); 
   }
 
+  getUnread(data, res) {
+    const id = data.id;
+    if (id) {
+      this.dbAccountCtrl
+      .getById(id)
+      .then((obj) => {
+        const unrd = obj.unread || [];
+        res(null, unrd);
+      })
+      .catch((err) => {
+        res(err);
+      });
+    } else {
+      res("Not valid data");
+    }
+  }
+
+  setRead(data) {
+    const id     = data.id;
+    const readId = data.readId;
+
+    if (!id || !readId) {
+      return;
+    }
+
+    this.dbAccountCtrl
+    .getById((account) => {
+      let unread = account.unread || [];
+
+      unread.forEach((itm, i) => {
+        if (itm.id == readId) {
+          unread.splice(i, 1);
+        }
+      });
+
+      account.unread = unread;
+      return this.dbAccountCtrl.updateObejct(account);
+    }).then((obj) => {
+      console.log('Set unread onject', obj);
+    }).catch((err) => {
+      console.error("Error update account", err);
+    })
+  }
+
   messageHandler(data) {
     const encrypter = new EnDecrypter();
 
@@ -72,12 +123,35 @@ export default class MessengerController {
           if (userSender) {
             msg.messages = encrypter.cryptoData(data.message, userSender.key);
             userSender.get().emit("newMessage", msg);
-          }
+          } 
 
           let userListner = this.clients.get(data.to);
           if (userListner) {
             msg.messages = encrypter.cryptoData(data.message, userListner.key);
             userListner.get().emit("newMessage", msg);
+          } else {
+            this.dbAccountCtrl
+            .getById(data.to)
+            .then((account) => {  
+              account.unread = account.unread || [];
+
+              let isNeedSave = true;
+
+              account.unread.forEach((itm, i) => {
+                if (itm.id.toString() == data.from.toString())
+                  isNeedSave = false;
+              });
+
+              if (isNeedSave) {
+                account.unread.push({id: data.from, name: data.userName});
+              }
+
+              return this.dbAccountCtrl.updateObejct(account)
+            }).then((acnt) => {
+              console.log('Save unread message');
+            }).catch((err) => {
+              console.error("Error update account", err);
+            });
           }
         }
       })

@@ -25,7 +25,8 @@ export default class DBAccountCtrl {
             pass:      Encryption.saltAndHash(pass),
             create:    moment().format('MMMM Do YYYY, h:mm:ss a'),
             loginTime: moment().format('MMMM Do YYYY, h:mm:ss a'),
-            online:    false
+            online:    false,
+            unread: []
           };
 
           this.collection.insert(account, { safe: true }, (err, res) => {
@@ -40,19 +41,35 @@ export default class DBAccountCtrl {
 
     return prom;
   }
+
+  updateObejct(obj) {
+    const prom = new Promise((resolve, reject) => {
+      this.collection.findOne({ _id: ObjectID(obj._id) }, (err, doc) => {
+        this.collection.save(obj, { safe: true }, (err) => {
+          if (err)
+            reject("error save");
+          else
+            resolve(obj);
+        });
+      });
+    });
+
+    return prom;
+  }
   // если параметр null, то задает старое значение в обекте 
-  update(id, email, name, pass, loginTime, online) {
+  update(id, email, name, pass, loginTime, online, unread) {
     const prom = new Promise((resolve, reject) => {
 
       this.collection.findOne({ _id: ObjectID(id) }, (err, doc) => {
         if (err) {
           reject("not found");
         } else {
-          doc.email = email || doc.email;
-          doc.name = name || doc.name;
-          doc.pass = pass || doc.pass;
+          doc.email     = email || doc.email;
+          doc.name      = name || doc.name;
+          doc.pass      = pass || doc.pass;
           doc.loginTime = loginTime || doc.loginTime;
-          doc.online = online
+          doc.online    = online;
+          doc.unread    = unread || doc.unread;
 
           this.collection.save(doc, { safe: true }, (err) => {
             if (err)
