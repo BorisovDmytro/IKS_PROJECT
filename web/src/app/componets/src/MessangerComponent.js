@@ -10,6 +10,7 @@ export default (app) => {
       this.timeout          = $timeout;
       this.messages         = "";
       this.model            = [];
+      this.users            = [];
     }
 
     initialize() {
@@ -40,7 +41,7 @@ export default (app) => {
           window.location = "/";
         } else {
           this.updateGroupClients();
-          setInterval(this.updateGroupClients.bind(this), 4000);
+          setInterval(this.updateGroupClients.bind(this), 5000);
         }
       });
 
@@ -61,17 +62,39 @@ export default (app) => {
     updateGroupClients() {
       const account = this.authService.getAccount();
       this.messangerService.getGroupClients("Public", (err, data) => {
-          
           console.log("getGroupClients:", data);
           for(let i = 0; i < data.length; i ++) {
             if(data[i].id == account.id) {
               data.splice(i, 1);
               break;
             }
+            data[i].isHaveUnread = false;
+          }
+          
+          this.timeout(() => {
+            this.users = data;
+            this.updateUnread();
+          }, 10);
+        });
+    }
+
+    updateUnread() {
+      const account = this.authService.getAccount();
+
+      this.messangerService.getUnread(account.id, (err, unread) => {
+        this.timeout(() => {
+          for (let user of this.users) {
+            for (let unrd of unread) {
+              if (user.id == unrd.id) {
+                user.isHaveUnread = true;
+                break;
+              }
+            }
           }
 
-          this.timeout(() => this.users = data, 10);
-        });
+          console.log("#Unread", this.users);
+        }, 10);
+      });
     }
 
     send() {
@@ -117,6 +140,10 @@ export default (app) => {
       const account     = this.authService.getAccount();
       this.toUser       = user;
       this.currentGroup = null;
+      if (user.isHaveUnread) {
+        this.messangerService.setRead(account.id, user.id);
+        this.updateUnread();
+      }
       this.messangerService.getPrivate(this.toUser.id, account.id);
     }
 

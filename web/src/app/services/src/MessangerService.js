@@ -91,6 +91,14 @@ export default (app) => {
       });
     }
 
+    getUnread(id, cb) {
+      this.webSocket.emit("getUnread", {id: id} ,cb);
+    }
+
+    setRead(idAccount, readId) {
+      this.webSocket.emit("setRead", {id: idAccount, readId: readId});
+    }
+
     getPrivate(to, from) {
       const requestData = { to: to, from: from };
 

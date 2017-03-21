@@ -28,7 +28,7 @@
              ng-class="item.name == $ctrl.toUser.name ? 'collection-item active' : 'collection-item'"
              ng-click="$ctrl.onUserCLick(item)">
             {{item.name}}
-            <span class="new badge">4</span>
+            <span class="new badge" ng-show="item.isHaveUnread">1</span>
             <div ng-show="item.online" style="float: left; width: 10px; height: 10px; border-radius: 5px; margin-bottom: 0px; background-color: #00f204;"></div>
             <div ng-hide="item.online" style="float: left; width: 10px; height: 10px; border-radius: 5px; margin-bottom: 0px; background-color: #f20000;"></div>
           </a>
