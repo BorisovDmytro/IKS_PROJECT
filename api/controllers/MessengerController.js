@@ -95,7 +95,7 @@ export default class MessengerController {
         account.unread = unread;
         return this.dbAccountCtrl.updateObejct(account);
       }).then((obj) => {
-        console.log('Set unread onject', obj);
+        console.log('Set unread onject', id, readId);
       }).catch((err) => {
         console.error("Error update account", err);
       });
@@ -130,30 +130,29 @@ export default class MessengerController {
           if (userListner) {
             msg.messages = encrypter.cryptoData(data.message, userListner.key);
             userListner.get().emit("newMessage", msg);
-          } else {
-            this.dbAccountCtrl
-              .getById(data.to)
-              .then((account) => {
-                account.unread = account.unread || [];
+          } 
+          this.dbAccountCtrl
+            .getById(data.to)
+            .then((account) => {
+              account.unread = account.unread || [];
 
-                let isNeedSave = true;
+              let isNeedSave = true;
 
-                account.unread.forEach((itm, i) => {
-                  if (itm.id.toString() == data.from.toString())
-                    isNeedSave = false;
-                });
-
-                if (isNeedSave) {
-                  account.unread.push({ id: data.from, name: data.userName });
-                }
-
-                return this.dbAccountCtrl.updateObejct(account);
-              }).then((acnt) => {
-                console.log('Save unread message');
-              }).catch((err) => {
-                console.error("Error update account", err);
+              account.unread.forEach((itm, i) => {
+                if (itm.id.toString() == data.from.toString())
+                  isNeedSave = false;
               });
-          }
+
+              if (isNeedSave) {
+                account.unread.push({ id: data.from, name: data.userName });
+              }
+
+              return this.dbAccountCtrl.updateObejct(account);
+            }).then((acnt) => {
+              console.log('Save unread message');
+            }).catch((err) => {
+              console.error("Error update account", err);
+            });
         }
       })
       .catch((err) => { console.log("Error save msg:", err); });
