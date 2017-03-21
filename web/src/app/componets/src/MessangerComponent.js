@@ -41,7 +41,7 @@ export default (app) => {
           window.location = "/";
         } else {
           this.updateGroupClients();
-          setInterval(this.updateGroupClients.bind(this), 5000);
+          setInterval(this.updateGroupClients.bind(this), 2000);
         }
       });
 
@@ -67,6 +67,8 @@ export default (app) => {
             if(data[i].id == account.id) {
               data.splice(i, 1);
               break;
+            } else if (this.toUser && data[i].id == this.toUser.id) {
+              this.toUser = data[i];
             }
             data[i].isHaveUnread = false;
           }
@@ -92,7 +94,7 @@ export default (app) => {
             }
           }
 
-          console.log("#Unread", this.users);
+          console.log("#Unread", unread);
         }, 10);
       });
     }
@@ -145,6 +147,15 @@ export default (app) => {
         this.updateUnread();
       }
       this.messangerService.getPrivate(this.toUser.id, account.id);
+    }
+
+    onMessageViewOver() {
+      console.log('$onMessageViewOver', this.toUser);
+      if (this.toUser && this.toUser.isHaveUnread) {
+        const account = this.authService.getAccount();
+        this.messangerService.setRead(account.id, this.toUser.id);
+        this.toUser.isHaveUnread = false;
+      }
     }
 
     onUploadFile(file) {
