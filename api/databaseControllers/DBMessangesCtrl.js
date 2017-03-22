@@ -18,7 +18,7 @@ export default class DBMessangesCtrl {
       to: to,
       from: from,
       fileLink: fileLink || null,
-      date: moment().format('MMMM Do YYYY, h:mm:ss a'),
+      date: moment().format('l') + "\n" + moment().format('LT'),
     };
 
     const promise = new Promise((resolve, reject) => {
