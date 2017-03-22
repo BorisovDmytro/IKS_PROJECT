@@ -29,8 +29,8 @@
              ng-click="$ctrl.onUserCLick(item)">
             {{item.name}}
             <span class="new badge" ng-show="item.isHaveUnread">1</span>
-            <div ng-show="item.online" style="float: left; width: 10px; height: 10px; border-radius: 5px; margin-bottom: 0px; background-color: #00f204;"></div>
-            <div ng-hide="item.online" style="float: left; width: 10px; height: 10px; border-radius: 5px; margin-bottom: 0px; background-color: #f20000;"></div>
+            <div ng-show="item.online" style="float: left; color: #00ff00;">&#9658;</div>
+            <div ng-hide="item.online" style="float: left; color: #f20000;">&#9658;</div>
           </a>
         </div>
       </div>
