@@ -1,8 +1,9 @@
 "use strict"
 
 import AuthCtrl            from "./../controllers/AuthCtrl"
-import MessengerController from "./../controllers/MessengerController";
-import FileCtrl            from './../controllers/FileCtrl'   
+import MessengerController from "./../controllers/MessengerController"
+import FileCtrl            from './../controllers/FileCtrl'  
+import GroupApiController  from './../controllers/GroupController'
 
 export default class ControllerFactory {
   static createAuthCtrl(accountCtrl) {
@@ -15,5 +16,9 @@ export default class ControllerFactory {
 
   static createFileController(uplaodDir, dbFielCtrl) {
     return new FileCtrl(uplaodDir, dbFielCtrl);
+  }
+
+  static createGroupApiController(dbGroupCtrl, dbAccountCtrl) {
+    return new GroupApiController(dbGroupCtrl, dbAccountCtrl);
   }
 }

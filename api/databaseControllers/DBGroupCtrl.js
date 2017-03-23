@@ -22,7 +22,7 @@ export default class DBGroupCtrl {
           var group = {
             name: name,
             owner: owner,
-            users: []
+            users: [owner]
           };
           this.collection.insert(group, { safe: true }, (err, res) => {
             if (err)
@@ -44,7 +44,7 @@ export default class DBGroupCtrl {
         if (err) {
           cb("not found");
         } else {
-          doc.name = obj.name || doc.email;
+          doc.name  = obj.name || doc.email;
           doc.owner = obj.owner || doc.owner;
           doc.users = obj.users || doc.users;
 
@@ -72,7 +72,6 @@ export default class DBGroupCtrl {
     });
 
     return promise;
-
   }
 
   removeByName(name, cb) {
@@ -95,6 +94,20 @@ export default class DBGroupCtrl {
           rej(err);
         else
           res(obj);
+      });
+    });
+
+    return promise;
+  }
+
+  getByUser(id) {
+    const promise = new Promise((res, rej) => {
+      this.collection.find({$in: [id]}, (err, groups) => {
+        if (err) {
+          rej(err);
+        } else {
+          res(groups);
+        }
       });
     });
 
