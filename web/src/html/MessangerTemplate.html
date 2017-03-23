@@ -61,27 +61,20 @@
 </div>
 
 <div id="msgBody" ng-class="SideBar == true ? 'msg-H' : 'msg-F'" ng-mouseover="$ctrl.onMessageViewOver()">
-  <div class="card-content white">
-    <div ng-repeat="msg in $ctrl.model" style="padding: 2px;"
-     ng-class="msg.owner == $ctrl.nikname ? 'card-panel blue lighten-5  myMsg' : 'card-panel grey lighten-5  userMsg'">
-      <div class="row">
-        <div class="col s8">
-          <h5>
-            {{msg.owner}}
-          </h5>
-        </div>
-        <div class="col s4">
-          {{msg.date}}
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s12">
-          <span class="black-text" ng-show="!msg.fileLink">
-                {{msg.messages}}
-              </span>
-          <a ng-href="{{msg.fileLink}}" ng-show="msg.fileLink">{{msg.messages}}</a>
-        </div>
-      </div>
-    </div>
+  <table class="bordered">
+      <tbody>
+        <tr ng-repeat="msg in $ctrl.model" ng-class="msg.owner == $ctrl.nikname ? '' : 'grey lighten-3'">
+          <td ng-show="msg.owner == $ctrl.nikname">Вы:</td>
+          <td ng-show="msg.owner != $ctrl.nikname">{{msg.owner}}</td>
+          <td ng-show="msg.fileLink">
+            <a ng-href="{{msg.fileLink}}" ng-show="msg.fileLink">{{msg.messages}}</a>
+          </td>
+          <td ng-show="!msg.fileLink">
+            {{msg.messages}}
+          </td>
+          <td style="text-align: right;">{{msg.date}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
