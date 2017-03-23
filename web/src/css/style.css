@@ -23,3 +23,47 @@
   top: 0;
   left: 0;   
 }
+
+  .input-F {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    padding: 5px;
+    margin: 0px;
+    height: 100px;
+    width: 100%;
+    z-index: 1000;
+  }
+  
+  .input-H {
+    position: fixed;
+    bottom: 0px;
+    left: 300px;
+    padding: 5px;
+    margin: 0px;
+    height: 100px;
+    width: calc(100% - 300px);
+    z-index: 1000;
+  }
+  
+  .msg-F {
+    margin-left: 0px;
+    padding-bottom: 20px;
+    margin: 0px;
+    width: 100%;
+    float: right;
+    padding: 2px;
+    height: calc(100% - 170px);
+    overflow-y: auto;
+  }
+  
+  .msg-H {
+    margin-left: 0px;
+    padding-bottom: 20px;
+    margin: 0px;
+    width: calc(100% - 300px);
+    float: right;
+    padding: 2px;
+    height: calc(100% - 170px);
+    overflow-y: auto;
+  }
