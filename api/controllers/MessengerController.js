@@ -10,11 +10,12 @@ const keyBD = "dsadsadsfdd";
 
 export default class MessengerController {
 
-  constructor(httpServer, dbMessangesCtrl, dbAccountCtrl) {
-    this.clients = new ClientsController();
+  constructor(httpServer, dbMessangesCtrl, dbAccountCtrl, dbGroupCtrl) {
+    this.clients         = new ClientsController();
     this.dbMessangesCtrl = dbMessangesCtrl;
-    this.dbAccountCtrl = dbAccountCtrl;
-    this.server = SocketServer.attach(httpServer);
+    this.dbAccountCtrl   = dbAccountCtrl;
+    this.dbGroupCtrl     = dbGroupCtrl;
+    this.server          = SocketServer.attach(httpServer);
 
     this.server.on('connection', (webSocket) => {
       let client = new ClientInstance(webSocket, this);
@@ -104,8 +105,8 @@ export default class MessengerController {
   messageHandler(data) {
     const encrypter = new EnDecrypter();
 
-    let userSender = this.clients.get(data.from);
-    data.message = encrypter.uncryptoData(data.message, userSender.key);
+    let userSender    = this.clients.get(data.from);
+    data.message      = encrypter.uncryptoData(data.message, userSender.key);
     const encryptoMsg = encrypter.cryptoData(data.message, keyBD);
 
     this.dbMessangesCtrl
@@ -114,11 +115,27 @@ export default class MessengerController {
         msg.messages = data.message;
 
         if (data.groupName != "") {
-          let clients = this.clients.values(); // TODO when add group support send to group members
+          this.dbGroupCtrl
+          .getByName(data.groupName)
+          .then((group) => {
+            const users = group.users;
+            for (let user of users) {
+              let client = this.clients.get(user);
+              if (client) {
+                msg.messages = encrypter.cryptoData(data.message, client.key);
+                client.get().emit("newMessage", msg);
+              }
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+
+          /*let clients = this.clients.values(); // TODO when add group support send to group members
           for (let client of clients) {
             msg.messages = encrypter.cryptoData(data.message, client.key);
             client.get().emit("newMessage", msg);
-          }
+          }*/
         } else {
           let userSender = this.clients.get(data.from);
           if (userSender) {

@@ -114,7 +114,7 @@ export default class DBGroupCtrl {
     return promise;
   }
 
-  getByName(name, cb) {
+  getByName(name) {
     const promise = new Promise((res, rej) => {
       this.collection.findOne({ name: name }, (err, obj) => {
         if (err)

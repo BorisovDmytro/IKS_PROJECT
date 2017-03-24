@@ -53,7 +53,7 @@ connector.connect(config("dbUrl"), (db) => {
   const dbGroupCtrl   = DbFactory.createGroupCtrl(db);
 
   const authCtrl  = ControllerFactory.createAuthCtrl(dbAccountCtrl);
-  const messenger = ControllerFactory.createMessengerController(httpServer, dbMgsCtrl, dbAccountCtrl); 
+  const messenger = ControllerFactory.createMessengerController(httpServer, dbMgsCtrl, dbAccountCtrl, dbGroupCtrl); 
   const fileCtrl  = ControllerFactory.createFileController(uplaodDir, dbFileCtrl);
   const groupCtrl = ControllerFactory.createGroupApiController(dbGroupCtrl, dbAccountCtrl);
 

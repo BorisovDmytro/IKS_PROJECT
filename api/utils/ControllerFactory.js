@@ -10,8 +10,8 @@ export default class ControllerFactory {
     return new AuthCtrl(accountCtrl);
   }
 
-  static createMessengerController(httpServer, dbMsgCtrl, dbAccountCtrl) {
-    return new MessengerController(httpServer, dbMsgCtrl, dbAccountCtrl);
+  static createMessengerController(httpServer, dbMsgCtrl, dbAccountCtrl, dbGroupCtrl) {
+    return new MessengerController(httpServer, dbMsgCtrl, dbAccountCtrl, dbGroupCtrl);
   }
 
   static createFileController(uplaodDir, dbFielCtrl) {

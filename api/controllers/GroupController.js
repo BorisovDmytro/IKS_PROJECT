@@ -42,12 +42,12 @@ export default class GroupApiController {
         res.status(500).send(err);
       });
   }
-  // {idGroup: gId, user: id}
+  // {idGroup: gId,user: id} post /group body {users: []}
   addUserToGroup(req, res) {
-    const id   = req.query.idGroup;
-    const user = req.query.user;
+    const id    = req.query.idGroup;
+    const users = req.body.users;
 
-    if (!id || !user) {
+    if (!id || !users) {
       res.status(400).send("error input data");
       return;
     }
@@ -55,7 +55,10 @@ export default class GroupApiController {
     this.dbGroupCtrl
       .getById(id)
       .the((group) => {
-        group.users.push(user);
+        for (user of users) {
+          group.users.push(user);
+        }
+        
         return this.dbGroupCtrl.update(id, group);
       }).then(() => {
         res.status(200).send("success");
