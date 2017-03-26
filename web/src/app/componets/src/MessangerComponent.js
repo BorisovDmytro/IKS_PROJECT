@@ -4,7 +4,8 @@ import FileUploder from './../../utils/FileUplouder';
 
 export default (app) => {
   class MessangerComponent {
-    constructor(authService, messangerService, $timeout) {
+    constructor(authService, messangerService, $timeout, groupService) {
+      this.groupService     = groupService;
       this.authService      = authService;
       this.messangerService = messangerService;
       this.timeout          = $timeout;
