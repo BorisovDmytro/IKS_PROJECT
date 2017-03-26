@@ -13,8 +13,11 @@ export default class DBGroupCtrl {
     this.collection = db.collection('group');
   }
 
-  add(name, owner) {
+  add(name, owner, users) {
     const promise = new Promise((resolve, reject) => {
+      let mUsers = users || [];
+      mUsers.push(owner);
+
       this.collection.findOne({ $or: [{ name: name }, { owner: owner }] }, (err, doc) => {
         if (doc) {
           cb("data-token");
@@ -22,7 +25,7 @@ export default class DBGroupCtrl {
           var group = {
             name: name,
             owner: owner,
-            users: [owner]
+            users: mUsers
           };
           this.collection.insert(group, { safe: true }, (err, res) => {
             if (err)
