@@ -3,7 +3,8 @@
 const fs    = require('fs')
 const path  = require('path')
 
-var folder = __dirname + '../../upload';
+//var folder = __dirname + '../../upload';
+var folder = __dirname + '/upload';
 var now = new Date();
 
 
