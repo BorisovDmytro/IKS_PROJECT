@@ -22,13 +22,16 @@ export default (app) => {
       });
     }
 
-    addGroup(id, name, cb) {
+    addGroup(id, name, users, cb) {
       this.http({
         method: 'PUT',
         url: '/group',
         params: {
           owner: id,
           name: name
+        },
+        data: {
+          users: users
         }
       }).then((answ) => {
         const res = answ.data;

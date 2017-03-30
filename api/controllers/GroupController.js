@@ -23,10 +23,11 @@ export default class GroupApiController {
         res.status(400).send("invalid data");
       });
   }
-  // {owner: you account id, name: group name }
+  // {owner: you account id, name: group name, users [] // body }
   addGroup(req, res) {
     const name  = req.query.name;
     const owner = req.query.owner;
+    const users = req.body.users || [];
 
     if (!name || !owner) {
       res.status(400).send("error input data");
@@ -34,7 +35,7 @@ export default class GroupApiController {
     }
 
     this.dbGroupCtrl
-      .add(name, owner)
+      .add(name, owner, users)
       .then(() => {
         res.status(200).send("success");
       })

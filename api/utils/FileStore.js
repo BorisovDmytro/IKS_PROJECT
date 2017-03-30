@@ -26,4 +26,5 @@ export default class FileStore {
       }
     }).single('file');
   } 
+  
 }
