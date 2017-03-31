@@ -9,7 +9,7 @@ export default (app) => {
     getAccountGroup(id, cb) {
       this.http({
         method: 'GET',
-        utl: '/group',
+        url: '/group',
         params: {
           id: id
         }

@@ -8,7 +8,7 @@ export default class GroupApiController {
   // {id: you account id }
   getAccountGroup(req, res) {
     const idAccount = req.query.id;
-
+    console.log("/group id :", idAccount);
     if (!idAccount) {
       res.status(400).send("error input data");
       return;
@@ -20,6 +20,7 @@ export default class GroupApiController {
         res.status(200).send(groups);
       })
       .catch((err) => {
+        console.error(err);
         res.status(400).send("invalid data");
       });
   }
@@ -28,7 +29,7 @@ export default class GroupApiController {
     const name  = req.query.name;
     const owner = req.query.owner;
     const users = req.body.users || [];
-
+    console.log("AddGroup", req.query, req.body);
     if (!name || !owner) {
       res.status(400).send("error input data");
       return;

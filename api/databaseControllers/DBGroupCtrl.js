@@ -18,9 +18,9 @@ export default class DBGroupCtrl {
       let mUsers = users || [];
       mUsers.push(owner);
 
-      this.collection.findOne({ $or: [{ name: name }, { owner: owner }] }, (err, doc) => {
+      this.collection.findOne({ name: name }, (err, doc) => {
         if (doc) {
-          cb("data-token");
+          reject("data-token");
         } else {
           var group = {
             name: name,
@@ -105,7 +105,7 @@ export default class DBGroupCtrl {
 
   getByUser(id) {
     const promise = new Promise((res, rej) => {
-      this.collection.find({$in: [id]}, (err, groups) => {
+      this.collection.find({users: {$in: [id]}}).toArray((err, groups) => {
         if (err) {
           rej(err);
         } else {

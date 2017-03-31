@@ -38,7 +38,7 @@
     left: 0px;
     padding: 5px;
     margin: 0px;
-    height: 105px;
+    height: 110px;
     width: 100%;
     z-index: 1000;
 }
@@ -53,6 +53,15 @@
     height: calc(100% - 170px);
     overflow-y: auto;
 }
+  .sidebar-M{
+    position: fixed; 
+    margin-left: 0px; 
+    width: 100%; 
+    height: calc(100% - 87px); 
+    float: left;
+    padding: 8px; 
+    z-index: 1500;
+  }
 
 /*For desktop */
 @media all and (min-width: 768px) {
@@ -92,7 +101,7 @@
     left: 0px;
     padding: 5px;
     margin: 0px;
-    height: 105px;
+    height: 110px;
     width: 100%;
     z-index: 1000;
   }
@@ -103,9 +112,19 @@
     left: 300px;
     padding: 5px;
     margin: 0px;
-    height: 105px;
+    height: 110px;
     width: calc(100% - 300px);
     z-index: 1000;
+  }
+
+  .sidebar-F{
+    position: fixed; 
+    margin-left: 0px; 
+    width: 300px; 
+    height: calc(100% - 87px); 
+    float: left;
+    padding: 8px; 
+    z-index: 1500;
   }
 
 

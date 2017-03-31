@@ -31,11 +31,9 @@ export default class FileCtrt {
   // /download/{{desc.name}}?id={{desc._id}}
   downloads(req, res) {
     const id = req.query.id;
-    console.log('#ID', id);
     this.dbFileCtr.getById(id)
     .then((doc) => {
-      console.log('#FIND', id, path.join(this.uploadPath, id));
-      res.status(200).sendFile(path.join(this.uploadPath, id));
+    res.status(200).sendFile(path.join(this.uploadPath, id));
     })
     .catch((err) => res.status(400).send('Not found: ' + err));
   }

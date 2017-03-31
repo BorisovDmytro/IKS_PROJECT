@@ -12,6 +12,8 @@ export default (app) => {
       this.messages         = "";
       this.model            = [];
       this.users            = [];
+
+      this.poolingTimeOut   = 2000; //RELEASE 60 000 * 5
     }
 
     initialize() {
@@ -26,6 +28,15 @@ export default (app) => {
       });
 
       this.messangerService.setListener('newMessage', (data) => {
+        if (this.toUser) {
+          if (data.from != this.toUser.id && data.to != this.toUser.id) {
+            return;
+          }
+        } else { // Group
+          if (data.group != this.currentGroup.name) {
+            return;
+          }
+        }
         this.model.push(data);
         this.animatedScrollDown(200, 0);
       });
@@ -42,7 +53,7 @@ export default (app) => {
           window.location = "/";
         } else {
           this.updateGroupClients();
-          setInterval(this.updateGroupClients.bind(this), 2000);
+          setInterval(this.updateGroupClients.bind(this), this.poolingTimeOut);
         }
       });
 
@@ -62,6 +73,15 @@ export default (app) => {
 
     updateGroupClients() {
       const account = this.authService.getAccount();
+
+      this.groupService.getAccountGroup(account.id, (err, res) => {
+        console.log('$$$RES', res);
+        this.timeout(() => {
+            this.groups = res;
+            //this.updateUnread();
+          }, 10);
+      });
+      // TODO RENAME GET ALL account
       this.messangerService.getGroupClients("Public", (err, data) => {
           console.log("getGroupClients:", data);
           for(let i = 0; i < data.length; i ++) {
@@ -107,8 +127,8 @@ export default (app) => {
         const fileLink = this.uploadFileData ? `/download/${this.uploadFileData.name}?id=${this.uploadFileData._id}` : null;
 
         if (this.mIsGroup) {
-          console.log('Send to group ');
-          this.messangerService.send(account.name, "Public", "", account.id, this.messages, fileLink);
+          console.log('Send to group ', this.currentGroup);
+          this.messangerService.send(account.name, this.currentGroup.name, "", account.id, this.messages, fileLink);
           this.messages = "";
         } else {
           console.log('Send to private ');
@@ -135,7 +155,7 @@ export default (app) => {
     onGroupCLick(groupName) {
       const account     = this.authService.getAccount();
       this.currentGroup = groupName;
-      this.messangerService.getHistory(groupName, 0, account.id);
+      this.messangerService.getHistory(groupName.name, 0, account.id);
       this.toUser = null;
     }
 
@@ -187,6 +207,35 @@ export default (app) => {
       });
 
       uploader.send(file);
+    }
+
+    onShowAddGroup() {
+      this.accounts = this.users;
+      this.crtGroupUser = [];
+    }
+
+    onAddToGroup(item) {
+      this.crtGroupUser.push(item.id);
+    }
+
+    onRemoveFromGroup(index) {
+      this.crtGroupUser.splice(index, 1);
+    }
+
+    onSubmitGroup() {
+      console.log(this.crtGroupName, this.crtGroupUser);
+      const account = this.authService.getAccount();
+      //addGroup(id, name, users, cb)
+      //TODO CHECK crtGroupUser if EMPTY MOT CREATE
+      this.groupService.addGroup(account.id, this.crtGroupName, this.crtGroupUser,
+       (err) => {
+        if (err) 
+          console.error(err);
+        else {
+          this.crtGroupUser = [];
+          this.crtGroupName = "";
+        }
+      });
     }
   }
 
