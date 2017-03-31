@@ -9,7 +9,7 @@ export default (app) => {
       this.isLoginError = false;
 
       this.loginModel = {
-        email: "444@gmail.com",
+        email: "111@gmail.com",
         pass: "695497"
       };
     }

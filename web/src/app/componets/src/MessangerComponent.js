@@ -17,6 +17,27 @@ export default (app) => {
     }
 
     initialize() {
+      let touchStrtX = 0;
+      
+      window.ontouchstart = (event) => {
+        console.log('ontouchstart',event);
+        touchStrtX = event.screenX;
+      }
+
+      window.ontouchend = (event) => {
+        console.log('ontouchend',event);
+        let x = event.screenX;
+
+        if (x < touchStrtX) { // left
+          this.timeout(() => this.SideBar = false, 10);
+        } 
+
+        if (x > touchStrtX) { // right
+          this.timeout(() => this.SideBar = true, 10);
+        }
+       
+      }
+
       this.messangerService.setListener('history', (data) => {
         this.model = data;
         this.timeout(() => this.animatedScrollDown(100, 0), 10);
@@ -157,6 +178,7 @@ export default (app) => {
       this.currentGroup = groupName;
       this.messangerService.getHistory(groupName.name, 0, account.id);
       this.toUser = null;
+      this.SideBar = false;
     }
 
     onUserCLick(user) {
@@ -168,6 +190,7 @@ export default (app) => {
         this.updateUnread();
       }
       this.messangerService.getPrivate(this.toUser.id, account.id);
+      this.SideBar = false;
     }
 
     onMessageViewOver() {

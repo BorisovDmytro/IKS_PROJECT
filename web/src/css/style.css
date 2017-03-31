@@ -29,11 +29,11 @@
 .auth-form {
   padding: 0px;
   width: 100%;
-  height: 95%;
+  height: 100vh;
   margin: 0px;
 }
 .input-M{
-      position: fixed;
+    position: fixed;
     bottom: 0px;
     left: 0px;
     padding: 5px;
@@ -44,6 +44,9 @@
 }
 
 .msg-M{
+    position: fixed; 
+    top: 0px;
+    left:0px;
     margin-left: 0px;
     padding-bottom: 20px;
     margin: 0px;
@@ -52,16 +55,17 @@
     padding: 2px;
     height: calc(100% - 170px);
     overflow-y: auto;
+    z-index: 0;
 }
-  .sidebar-M{
-    position: fixed; 
-    margin-left: 0px; 
-    width: 100%; 
-    height: calc(100% - 87px); 
-    float: left;
-    padding: 8px; 
-    z-index: 1500;
-  }
+.sidebar-M{
+  position: fixed; 
+  margin-left: 0px; 
+  width: 100%; 
+  height: calc(100% - 60px); 
+  float: left;
+  padding: 8px; 
+  z-index: 1500;
+}
 
 /*For desktop */
 @media all and (min-width: 768px) {

@@ -1,7 +1,7 @@
 <div class="navbar-fixed">
   <nav style="height: 60px">
     <div class="nav-wrapper teal darken-1" >
-      <a class="brand-logo" ng-click="SideBar = !SideBar" ng-init="SideBar = true"
+      <a class="brand-logo" ng-click="$ctrl.SideBar = !$ctrl.SideBar" ng-init="$ctrl.SideBar = true"
        style="left: 10px; margin-left: 10px; cursor: pointer;">&#9776;</a>
       <ul id="nav-mobile" class="right" style="padding: 0px;">
         <li style="position: absolute; left: 43%;"><a>{{$ctrl.nikname}}</a></li>
@@ -11,7 +11,7 @@
   </nav>
 </div>
 
-<div class="card grey lighten-4 sidebar-M sidebar-F" ng-show="SideBar" ng-init="$ctrl.initialize()">
+<div class="card grey lighten-4 sidebar-M sidebar-F" ng-show="$ctrl.SideBar" ng-init="$ctrl.initialize()" style="margin: 0px;">
   <div class="card-tabs">
     <a ng-class="$ctrl.mIsGroup ? 'waves-effect waves-light btn' : 'btn disabled'"
      style="width: calc(50% - 5px);" ng-click="$ctrl.mIsGroup = false;">Акаунти</a>
