@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "app": "babel-node app.js",
+    "start": "babel-node start.js U2FsdGVkX18+iLoUxk8g2p+207BmhaJxwyJKoklJhAsZNZ5Enb6d3ekpoT6qzHIk",
     "admin": "babel-node admin.js"
   },
   "keywords": [],

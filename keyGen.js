@@ -1,21 +1,16 @@
 'use strict'
 
-const mac = process.argv[2];
+const mac      = process.argv[2];
+const CryptoJS = require("crypto-js");
+
+const key = "qwertygdhsabdsads321312avdahskdsvghdaskdsa3213jdasd";
 
 if (!mac)
   throw new Error("not set mac address");
 
 function keyGen(mac) {
-  var items = mac.split("-");
-
-  var key = [];
-
-  for (var itm of items) {
-    key.push(itm[1].toString() + itm[0].toString());
-  }
-
-  return key.join('');
+  const ciphertext = CryptoJS.AES.encrypt(mac, key);
+  return ciphertext.toString();
 }
-
 
 console.log('KEY:', keyGen(mac));
