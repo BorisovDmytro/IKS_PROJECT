@@ -1,7 +1,21 @@
-for install 
-  npm install
-  npm install --global babel
-  npm install --global babel-cli
-for run
-  run mongo db
-  npm run app
+1) Установить mongodb
+2) Установить node js
+3) Указать в бат файле run database.bat путь к папке где будет лежать база 
+4) Распокавать сервер server.zip
+5) В папке с сервером запустить скрипт для получения mac адресса командой node mac_address.js
+6) Передать свой мак адрес для получения ключа продукта
+7) Открить файл с настройками config.json и настроить
+
+{
+  "ip": "127.0.0.1", // Ip адрес сервера
+  "port": "8080", // порт сервера
+  "id_admin": "127.0.0.1", // Ip адрес админ сервира
+  "port_admin" : "8080", // порт админ  сервера
+  "dbUrl": "mongodb://127.0.0.1:27017/iks", // url базы даних оставить по умолчанию
+  "uploadDir": "E:/iks/build_alpha_1/upload", // путь к папке где будут хранится временые файлы
+  "key": "U2FsdGVkX18+iLoUxk8g2p+207BmhaJxwyJKoklJhAsZNZ5Enb6d3ekpoT6qzHIk" // ключ продукта
+}
+
+8) Для запуска базы запустить run database.bat
+9) Для запуска сервера запустить server.bat
+10) Для запуска страниці администратора admin.bat
