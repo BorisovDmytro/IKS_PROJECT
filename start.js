@@ -1,4 +1,4 @@
-const key = process.argv[2];
+
 const str = 'start server';
 
 import CryptoJS   from 'crypto-js';
@@ -43,7 +43,8 @@ getMac.getMac(function (err, macAddress) {
   if (err) throw err;
   console.log('mac address:', macAddress);
 
-
+  const key = config('key');
+  
   if (macAddress == checkKey(key)) {
     console.log('Запускаю сервер');
     const app = Express();
